@@ -1,0 +1,24 @@
+============================================================
+RL on Constrained Hardware - Experiment 2: The Atari Wall
+Hardware: ARM64, 12GB RAM, 2 CPU cores, no GPU
+PyTorch: 2.14.0+cpu
+Initial memory: 229 MB
+============================================================
+
+============================================================
+Atari Pong - RAM mode
+============================================================
+A.L.E: Arcade Learning Environment (version 0.12.1+8a8fafb)
+[Powered by Stella]
+  Network params: 100,358
+  Initial memory: 298 MB
+  Ep   10 | Avg Reward:  -20.8 | Eps: 0.951 | Ep Time: 4.0s | Steps: 1002 | Mem: 339MB | Elapsed: 40s
+  Ep   20 | Avg Reward:  -20.1 | Eps: 0.905 | Ep Time: 4.6s | Steps: 902 | Mem: 355MB | Elapsed: 85s
+  Ep   30 | Avg Reward:  -20.3 | Eps: 0.860 | Ep Time: 4.1s | Steps: 1072 | Mem: 372MB | Elapsed: 126s
+  Ep   40 | Avg Reward:  -20.2 | Eps: 0.818 | Ep Time: 4.1s | Steps: 825 | Mem: 388MB | Elapsed: 167s
+  Ep   50 | Avg Reward:  -20.6 | Eps: 0.778 | Ep Time: 4.2s | Steps: 912 | Mem: 404MB | Elapsed: 209s
+  Ep   60 | Avg Reward:  -20.3 | Eps: 0.740 | Ep Time: 4.3s | Steps: 840 | Mem: 420MB | Elapsed: 252s
+  Ep   70 | Avg Reward:  -20.0 | Eps: 0.704 | Ep Time: 4.7s | Steps: 976 | Mem: 438MB | Elapsed: 299s
+  Ep   80 | Avg Reward:  -20.2 | Eps: 0.670 | Ep Time: 5.2s | Steps: 1082 | Mem: 455MB | Elapsed: 351s
+  Ep   90 | Avg Reward:  -20.7 | Eps: 0.637 | Ep Time: 4.3s | Steps: 792 | Mem: 471MB | Elapsed: 394s
+  Ep  100 | Avg Reward:  -20.6 | Eps: 0.606 | Ep Time: 4.8s | Steps: 939 | Mem: 487MB | Elapsed: 441s
