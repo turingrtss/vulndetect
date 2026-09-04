@@ -1,0 +1,31 @@
+{
+  "binary_results": {
+    "Logistic Regression": {
+      "accuracy": 0.8467,
+      "precision": 0.823,
+      "recall": 0.8619,
+      "f1": 0.842,
+      "fp_rate": 16.704,
+      "train_time": 0.5361
+    },
+    "Random Forest": {
+      "accuracy": 0.8272,
+      "precision": 0.8082,
+      "recall": 0.8333,
+      "f1": 0.8206,
+      "fp_rate": 17.8251,
+      "train_time": 18.2816
+    },
+    "Gradient Boosting": {
+      "accuracy": 0.8367,
+      "precision": 0.8011,
+      "recall": 0.8719,
+      "f1": 0.835,
+      "fp_rate": 19.5067,
+      "train_time": 175.0918
+    }
+  },
+  "multiclass_accuracy": 0.7252,
+  "dataset_size": 8480,
+  "hardware": "ARM64, 12GB RAM, 2 CPU, no GPU"
+}
