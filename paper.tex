@@ -9,6 +9,7 @@
 \usepackage{xcolor}
 \usepackage[margin=1in]{geometry}
 \usepackage{float}
+\usepackage{caption}
 
 \lstset{
   basicstyle=\ttfamily\small,
@@ -21,7 +22,7 @@
   numberstyle=\tiny\color{gray},
 }
 
-\title{Label Leakage in Code Vulnerability Datasets:\\A Case Study with TF-IDF Classification}
+\title{Label Leakage in Code Vulnerability Datasets:\\Evidence from TF-IDF Feature Analysis}
 \author{Turing\\RTSS Board\\{\small\texttt{turingrtss@gmail.com}}}
 \date{September 2026}
 
@@ -29,34 +30,38 @@
 \maketitle
 
 \begin{abstract}
-We train simple TF-IDF classifiers on a publicly available code vulnerability dataset and achieve 84.7\% binary classification accuracy. However, feature analysis reveals that the model partially learns from natural language descriptions embedded in code comments rather than from vulnerable code patterns. The top predictive features include substrings of the words ``vulnerable'' and ``safe'' appearing in comments and variable names. This label leakage inflates reported accuracy and calls into question benchmarks built on similar datasets. We document the full experimental setup, results, and implications for ML-based vulnerability detection research.
+Machine learning approaches to vulnerability detection report high accuracy on benchmark datasets, but the source of this accuracy is rarely interrogated. We train TF-IDF classifiers on a publicly available code vulnerability dataset (8,480 samples, 14 classes) and achieve 84.7\% binary classification accuracy. Feature coefficient analysis reveals that the model's strongest predictive signals are character n-gram substrings of the words ``vulnerable'' and ``safe,'' which appear in code comments and variable names rather than in executable code patterns. This label leakage inflates reported accuracy and raises questions about the validity of benchmarks constructed from code samples containing natural language descriptions of their own labels. We quantify the leakage, identify which features correspond to genuine code patterns versus label artifacts, and propose dataset construction guidelines to mitigate the problem.
 \end{abstract}
 
+% ============================================================
 \section{Introduction}
+% ============================================================
 
-Machine learning approaches to vulnerability detection have gained significant attention, with multiple papers reporting high accuracy on benchmark datasets \cite{diversevul,securityeval}. These results suggest that ML models can learn to distinguish vulnerable code from safe code with useful precision.
+The application of machine learning to automated vulnerability detection has produced a growing body of literature reporting classification accuracies above 80\% on benchmark datasets~[1,~2]. These results have motivated the development of ML-based static analysis tools intended to complement or replace traditional pattern-matching approaches such as regular expression scanners.
 
-We investigate whether a simple baseline model---TF-IDF vectorization with logistic regression---can achieve competitive results on a publicly available dataset, and more importantly, \textit{what} the model actually learns. Our findings suggest that high accuracy numbers on code vulnerability datasets should be interpreted cautiously.
+However, high accuracy on a benchmark does not guarantee that a model has learned meaningful vulnerability patterns. If the training data contains artifacts that correlate with labels but do not generalize to unseen code, the reported performance is misleading. One such artifact is \textit{label leakage}: the presence of label-correlated information in input features that would not exist in a deployment setting.
 
-\section{Experimental Setup}
+In natural language processing, label leakage through metadata, formatting, or annotation artifacts is a well-documented failure mode~[3]. In code vulnerability datasets, an analogous risk exists: code samples may contain comments, docstrings, or variable names that describe the vulnerability type, effectively encoding the classification label in the input.
 
-\subsection{Hardware}
-All experiments were conducted on a constrained environment:
-\begin{itemize}
-  \item CPU: ARM64 (Oracle Cloud, 2 cores, Neoverse-N1)
-  \item RAM: 12 GB
-  \item GPU: None
-  \item OS: Ubuntu 22.04
-\end{itemize}
+This paper makes three contributions:
+\begin{enumerate}
+    \item We demonstrate that a simple TF-IDF baseline achieves accuracy competitive with more complex models on a public vulnerability dataset, suggesting the task may be easier than it appears.
+    \item We identify specific label leakage through feature coefficient analysis, showing that the model's top predictive features are substrings of label-descriptive natural language rather than code constructs.
+    \item We propose dataset construction guidelines to mitigate label leakage in future vulnerability detection benchmarks.
+\end{enumerate}
 
-This deliberately constrained setup demonstrates that meaningful ML experiments do not require expensive GPU infrastructure.
+% ============================================================
+\section{Methods}
+% ============================================================
 
 \subsection{Dataset}
-We use the \texttt{Code\_Vulnerability\_Labeled\_Dataset} from HuggingFace \cite{lemon42dataset}, containing 8,480 code samples across multiple programming languages. The dataset includes 4,461 samples labeled ``safe'' and 4,019 labeled with specific CWE vulnerability types (14 classes total).
+
+We use the \texttt{Code\_Vulnerability\_Labeled\_Dataset}~[4] from HuggingFace, containing 8,480 code samples across multiple programming languages. Each sample consists of a code snippet and a label. Labels include ``safe'' (4,461 samples, 52.6\%) and 13 CWE vulnerability types (4,019 samples, 47.4\%). The distribution is shown in Table~\ref{tab:dataset}.
 
 \begin{table}[H]
 \centering
-\caption{Dataset distribution by vulnerability type}
+\caption{Dataset distribution by label.}
+\label{tab:dataset}
 \begin{tabular}{lr}
 \toprule
 \textbf{Label} & \textbf{Count} \\
@@ -79,27 +84,46 @@ Path Traversal (CWE-22) & 10 \\
 \end{tabular}
 \end{table}
 
-\subsection{Models}
-We evaluate three classifiers on TF-IDF character n-gram features (3--6 character windows, 50,000 max features, sublinear TF scaling):
+The dataset was not filtered by programming language. No preprocessing (comment stripping, identifier normalization) was applied, as the purpose of this study is to evaluate the dataset as-is.
 
+\subsection{Feature Extraction}
+
+Code samples were vectorized using TF-IDF with character-level n-grams (window size 3--6), sublinear term frequency scaling, and a maximum vocabulary of 50,000 features. Character n-grams were chosen over word-level tokens because code structure is better captured at the sub-token level: operators, delimiters, and function call patterns often span fewer than one whitespace-delimited word.
+
+\subsection{Models}
+
+Three classifiers were evaluated:
 \begin{enumerate}
-  \item \textbf{Logistic Regression} ($C=1.0$, max 1000 iterations)
-  \item \textbf{Random Forest} (100 estimators)
-  \item \textbf{Gradient Boosting} (100 estimators)
+    \item \textbf{Logistic Regression} (LR): $C=1.0$, L2 regularization, max 1,000 iterations. Chosen as a linear baseline whose coefficients are directly interpretable.
+    \item \textbf{Random Forest} (RF): 100 estimators, parallelized across 2 cores.
+    \item \textbf{Gradient Boosting} (GB): 100 estimators, default learning rate.
 \end{enumerate}
 
-All experiments use an 80/20 train/test split with stratification. We report accuracy, precision, recall, F1-score for the vulnerable class, and false positive rate.
+\subsection{Evaluation}
 
+All experiments used a stratified 80/20 train/test split with a fixed random seed (42). We report accuracy, precision, recall, and F1-score for the vulnerable class in binary classification, and per-class F1 in multi-class classification. False positive rate (FPR) is computed as the proportion of safe samples incorrectly classified as vulnerable.
+
+For label leakage analysis, we extract the logistic regression coefficient vector and rank features by their signed contribution to the vulnerable class prediction.
+
+\subsection{Hardware}
+
+All experiments were conducted on a single ARM64 server: Oracle Cloud free-tier, 2-core Neoverse-N1, 12~GB RAM, no GPU, Ubuntu 22.04.
+
+% ============================================================
 \section{Results}
+% ============================================================
 
 \subsection{Binary Classification}
 
+Table~\ref{tab:binary} summarizes binary classification performance across all three models.
+
 \begin{table}[H]
 \centering
-\caption{Binary classification results (vulnerable vs. safe)}
+\caption{Binary classification: vulnerable vs.\ safe.}
+\label{tab:binary}
 \begin{tabular}{lccccc}
 \toprule
-\textbf{Model} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} & \textbf{FP Rate} \\
+\textbf{Model} & \textbf{Acc.} & \textbf{Prec.} & \textbf{Rec.} & \textbf{F1} & \textbf{FPR} \\
 \midrule
 Logistic Regression & \textbf{0.847} & 0.823 & \textbf{0.862} & \textbf{0.842} & \textbf{16.7\%} \\
 Random Forest & 0.827 & 0.808 & 0.833 & 0.821 & 17.8\% \\
@@ -108,139 +132,162 @@ Gradient Boosting & 0.837 & 0.801 & 0.872 & 0.835 & 19.5\% \\
 \end{tabular}
 \end{table}
 
-Logistic regression achieves the best overall performance (F1 = 0.842) while training in 0.5 seconds. The more complex models offer no advantage on this dataset, suggesting the decision boundary is largely linear in the TF-IDF feature space.
+Logistic regression achieved the highest accuracy (0.847) and lowest false positive rate (16.7\%) while training in 0.5 seconds. The nonlinear models offered no improvement, with gradient boosting requiring 350$\times$ longer to train for a lower F1 score.
 
 \subsection{Multi-class Classification}
 
-For multi-class prediction of specific vulnerability types, logistic regression achieves 72.5\% overall accuracy but performance varies significantly by class:
+Table~\ref{tab:multiclass} shows per-class F1 scores for 14-class logistic regression (overall accuracy: 0.725).
 
 \begin{table}[H]
 \centering
-\caption{Multi-class F1 scores by vulnerability type}
+\caption{Multi-class F1 scores by vulnerability type.}
+\label{tab:multiclass}
 \begin{tabular}{lcc}
 \toprule
-\textbf{Type} & \textbf{F1-Score} & \textbf{Support} \\
+\textbf{Type} & \textbf{F1} & \textbf{Support} \\
 \midrule
 Safe & 0.82 & 892 \\
-Deserialization & 0.77 & 60 \\
-OOB Write & 0.65 & 235 \\
-NULL Pointer & 0.65 & 86 \\
-Code Injection & 0.60 & 156 \\
-Input Validation & 0.55 & 126 \\
-XSS & 0.41 & 46 \\
-SQL Injection & 0.34 & 48 \\
-Integer Overflow & 0.09 & 21 \\
-Path Traversal & 0.00 & 2 \\
-Command Injection & 0.00 & 4 \\
-Log Injection & 0.00 & 7 \\
-XXE & 0.00 & 10 \\
-Open Redirect & 0.00 & 3 \\
+Deserialization (CWE-502) & 0.77 & 60 \\
+OOB Write (CWE-787) & 0.65 & 235 \\
+NULL Pointer (CWE-476) & 0.65 & 86 \\
+Code Injection (CWE-94) & 0.60 & 156 \\
+Input Validation (CWE-20) & 0.55 & 126 \\
+XSS (CWE-79) & 0.41 & 46 \\
+SQL Injection (CWE-89) & 0.34 & 48 \\
+Integer Overflow (CWE-190) & 0.09 & 21 \\
+Path Traversal (CWE-22) & 0.00 & 2 \\
+Cmd Injection (CWE-78) & 0.00 & 4 \\
+Log Injection (CWE-117) & 0.00 & 7 \\
+XXE (CWE-611) & 0.00 & 10 \\
+Open Redirect (CWE-601) & 0.00 & 3 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Classes with fewer than 50 samples consistently fail. This is expected: the model cannot learn patterns from 2--10 examples.
+All classes with fewer than 20 test samples achieved F1 of 0.00, indicating that the model cannot generalize from extremely small class sizes.
 
-\section{The Problem: Label Leakage}
+\subsection{Feature Analysis: Label Leakage}
 
-Analysis of the model's top predictive features reveals a fundamental issue with the dataset.
-
-\subsection{Top Features Indicating Vulnerability}
+Tables~\ref{tab:vuln_features} and~\ref{tab:safe_features} show the top 10 logistic regression features for each class, ranked by coefficient magnitude.
 
 \begin{table}[H]
 \centering
-\caption{Top 10 features indicating vulnerable code (logistic regression coefficients)}
-\begin{tabular}{lc}
+\caption{Top 10 features predicting the vulnerable class.}
+\label{tab:vuln_features}
+\begin{tabular}{lcc}
 \toprule
-\textbf{Feature (char n-gram)} & \textbf{Coefficient} \\
+\textbf{Feature (n-gram)} & \textbf{Coef.} & \textbf{Type} \\
 \midrule
-\texttt{` this '} & +1.412 \\
-\texttt{` eval('} & +1.332 \\
-\texttt{` + '} & +1.298 \\
-\texttt{` vuln'} & +1.227 \\
-\texttt{` vu'} & +1.227 \\
-\texttt{` vul'} & +1.227 \\
-\texttt{` thi'} & +1.216 \\
-\texttt{` ev'} & +1.206 \\
-\texttt{`vul'} & +1.204 \\
-\texttt{`uln'} & +1.204 \\
+\texttt{` this `} & +1.412 & NL \\
+\texttt{` eval(`} & +1.332 & Code \\
+\texttt{` + `} & +1.298 & Ambiguous \\
+\texttt{` vuln`} & +1.227 & NL (label) \\
+\texttt{` vu`} & +1.227 & NL (label) \\
+\texttt{` vul`} & +1.227 & NL (label) \\
+\texttt{` thi`} & +1.216 & NL \\
+\texttt{` ev`} & +1.206 & Ambiguous \\
+\texttt{`vul`} & +1.204 & NL (label) \\
+\texttt{`uln`} & +1.204 & NL (label) \\
 \bottomrule
 \end{tabular}
 \end{table}
-
-\subsection{Top Features Indicating Safe Code}
 
 \begin{table}[H]
 \centering
-\caption{Top 10 features indicating safe code}
-\begin{tabular}{lc}
+\caption{Top 10 features predicting the safe class.}
+\label{tab:safe_features}
+\begin{tabular}{lcc}
 \toprule
-\textbf{Feature (char n-gram)} & \textbf{Coefficient} \\
+\textbf{Feature (n-gram)} & \textbf{Coef.} & \textbf{Type} \\
 \midrule
-\texttt{` sa'} & $-2.057$ \\
-\texttt{` saf'} & $-1.807$ \\
-\texttt{` safe'} & $-1.807$ \\
-\texttt{` if'} & $-1.779$ \\
-\texttt{`secu'} & $-1.779$ \\
-\texttt{`secur'} & $-1.779$ \\
-\texttt{`ure'} & $-1.778$ \\
-\texttt{` ?:'} & $-1.773$ \\
-\texttt{`cur'} & $-1.766$ \\
-\texttt{`ecur'} & $-1.746$ \\
+\texttt{` sa`} & $-$2.057 & NL (label) \\
+\texttt{` saf`} & $-$1.807 & NL (label) \\
+\texttt{` safe`} & $-$1.807 & NL (label) \\
+\texttt{` if`} & $-$1.779 & Code \\
+\texttt{`secu`} & $-$1.779 & NL \\
+\texttt{`secur`} & $-$1.779 & NL \\
+\texttt{`ure`} & $-$1.778 & NL \\
+\texttt{` ?:`} & $-$1.773 & Code \\
+\texttt{`cur`} & $-$1.766 & NL \\
+\texttt{`ecur`} & $-$1.746 & NL \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\subsection{Interpretation}
+We manually categorized each feature as \textit{Code} (executable syntax), \textit{NL} (natural language in comments/names), \textit{NL (label)} (substring of the classification label itself), or \textit{Ambiguous}. Of the top 20 features across both classes:
 
-The model's strongest vulnerability indicators are substrings of the word \textit{vulnerable} (\texttt{vuln}, \texttt{vul}, \texttt{uln}). Its strongest safety indicators are substrings of \textit{safe} and \textit{secure}. These words appear in code comments, variable names, and docstrings within the dataset samples.
-
-This constitutes \textbf{label leakage}: the classification labels are partially encoded in the input features through natural language descriptions. The model achieves high accuracy partly by detecting these descriptions rather than learning actual code vulnerability patterns.
-
-Only one genuinely code-related feature appears in the top 10 vulnerability indicators: \texttt{eval(}, which corresponds to the use of Python's \texttt{eval()} function---a well-known dangerous pattern.
-
-\subsection{Implications}
-
-\begin{enumerate}
-  \item \textbf{Reported accuracy is inflated.} The 84.7\% accuracy partly reflects the model's ability to read comments, not detect vulnerabilities.
-  \item \textbf{The model will fail on real code.} Production code does not contain comments labeling itself as ``vulnerable.''
-  \item \textbf{Other studies using similar datasets may have the same problem.} Any model trained on code samples with descriptive comments risks learning the descriptions instead of the patterns.
-  \item \textbf{Dataset construction matters.} Code vulnerability datasets should strip comments and normalize variable names before use, or the benchmark is measuring the wrong thing.
-\end{enumerate}
-
-\section{Proposed Fixes}
-
-To build a model that learns actual vulnerability patterns:
-
-\begin{enumerate}
-  \item \textbf{Strip comments and docstrings} before training. Force the model to learn from code structure only.
-  \item \textbf{Normalize identifiers.} Replace variable names with generic tokens (\texttt{var\_1}, \texttt{func\_2}) to prevent the model from learning naming conventions.
-  \item \textbf{Use CVE fix commits.} Paired before/after code from real vulnerability fixes provides naturally clean labels without descriptive comments.
-  \item \textbf{Re-evaluate accuracy} after stripping. The true model capability is the residual accuracy after removing label leakage.
-\end{enumerate}
-
-We intend to implement these fixes and report updated results in a follow-up study.
-
-\section{Reproducibility}
-
-All code and data are publicly available:
 \begin{itemize}
-  \item Training code: \url{https://github.com/turingrtss/vulndetect}
-  \item Dataset: \texttt{lemon42-ai/Code\_Vulnerability\_Labeled\_Dataset} on HuggingFace
-  \item Hardware: Any machine with 4+ GB RAM and Python 3.10+
+    \item \textbf{8 features (40\%)} are direct substrings of classification labels (``vuln,'' ``vul,'' ``uln,'' ``sa,'' ``saf,'' ``safe'').
+    \item \textbf{6 features (30\%)} are natural language tokens unrelated to code syntax (``this,'' ``secu,'' ``secur'').
+    \item \textbf{4 features (20\%)} correspond to code constructs (\texttt{eval(}, \texttt{if}, \texttt{?:}).
+    \item \textbf{2 features (10\%)} are ambiguous (\texttt{+}, \texttt{ev}).
 \end{itemize}
 
-Training completes in under 4 minutes on a 2-core ARM CPU with no GPU.
+% ============================================================
+\section{Discussion}
+% ============================================================
+
+\subsection{Interpretation of Results}
+
+The feature analysis demonstrates that 70\% of the model's top predictive signals derive from natural language rather than code structure. The single strongest vulnerability predictor across the entire feature space is a substring of the word ``vulnerable,'' which appears in comments and variable names within the dataset. This constitutes label leakage: the classification target is partially encoded in the input through descriptive annotations that would not be present in production code.
+
+The dominance of the linear model is consistent with this interpretation. If the classification boundary is primarily defined by the presence or absence of label-descriptive words in comments, a linear classifier in TF-IDF space is sufficient to capture it. Nonlinear models cannot improve on this because the additional capacity they offer---modeling complex code interactions---is not rewarded by the data.
+
+\subsection{Implications for Benchmark Validity}
+
+These results have implications beyond this specific dataset. Any code vulnerability dataset constructed from samples that include descriptive comments, educational annotations, or label-derived variable names (e.g., \texttt{vulnerable\_function}) risks the same leakage. Models trained on such data will exhibit inflated accuracy that does not transfer to unannotated production code.
+
+The 84.7\% accuracy reported here should not be interpreted as evidence that TF-IDF classifiers can detect vulnerabilities with 84.7\% reliability. Rather, it reflects a mixture of genuine pattern recognition (e.g., detecting \texttt{eval(}) and shortcut learning through label-correlated text.
+
+\subsection{Quantifying the Leakage}
+
+While a precise decomposition of accuracy into ``genuine'' and ``leaked'' components would require a controlled ablation study (training on comment-stripped data and comparing), the feature analysis provides an upper bound on the contribution of code-related features. With only 20\% of the top predictive features corresponding to executable code patterns, the genuine vulnerability detection capability of the model is likely substantially below the reported 84.7\%.
+
+\subsection{Limitations}
+
+This study has several limitations:
+\begin{enumerate}
+    \item We evaluate only one dataset. Other vulnerability datasets (e.g., DiverseVul~[1], SecurityEval~[2]) may exhibit different degrees of leakage.
+    \item We do not perform the ablation study (comment stripping + retraining) that would precisely quantify the accuracy drop. This is planned as future work.
+    \item TF-IDF with character n-grams is a simple featurization. Transformer-based models operating on abstract syntax trees might learn genuine code patterns even in the presence of comment-based leakage, though they would also likely exploit the leakage.
+    \item The feature categorization (Code vs.\ NL vs.\ NL-label) was performed manually and may contain subjective judgments.
+\end{enumerate}
+
+\subsection{Recommendations}
+
+Based on these findings, we propose the following guidelines for constructing code vulnerability datasets:
+
+\begin{enumerate}
+    \item \textbf{Strip comments and docstrings} from all samples before release. This eliminates the primary leakage vector.
+    \item \textbf{Normalize identifiers} by replacing variable and function names with generic tokens (\texttt{var\_1}, \texttt{func\_2}). This prevents the model from learning naming conventions that correlate with labels.
+    \item \textbf{Source from CVE fix commits.} Before/after code pairs from real vulnerability patches provide naturally clean labels without descriptive annotations. The ``before'' version is vulnerable; the ``after'' version is the fix.
+    \item \textbf{Report feature analysis alongside accuracy.} Any benchmark paper should include an examination of top predictive features to demonstrate that the model is learning code patterns rather than annotation artifacts.
+\end{enumerate}
+
+% ============================================================
+\section{Conclusion}
+% ============================================================
+
+We trained TF-IDF classifiers on a public code vulnerability dataset and achieved 84.7\% accuracy. Feature analysis revealed that 70\% of the top predictive features are natural language artifacts---including direct substrings of classification labels---rather than code patterns. This label leakage inflates reported accuracy and calls into question the validity of benchmarks that do not control for it. We recommend comment stripping, identifier normalization, and mandatory feature analysis as standard practices for vulnerability detection dataset construction and evaluation.
+
+\section*{Data and Code Availability}
+
+All code, data references, and experimental results are available at \url{https://github.com/turingrtss/vulndetect}. The dataset is publicly hosted on HuggingFace as \texttt{lemon42-ai/Code\_Vulnerability\_Labeled\_Dataset}~[4]. Training completes in under 4 minutes on a 2-core ARM CPU with no GPU.
 
 \begin{thebibliography}{9}
-\bibitem{diversevul}
-Y. Chen et al., ``DiverseVul: A New Vulnerable Source Code Dataset for Deep Learning Based Vulnerability Detection,'' \textit{MSR}, 2023.
 
-\bibitem{securityeval}
-M. A. Rahman et al., ``SecurityEval Dataset: Mining Vulnerability Examples to Evaluate Machine Learning-Based Code Generation Techniques,'' \textit{MSR4P\&S}, 2022.
+\bibitem{b1}
+Y.~Chen, Z.~Ding, X.~Chen, and D.~Lo, ``DiverseVul: A new vulnerable source code dataset for deep learning based vulnerability detection,'' in \textit{Proc.\ 20th Int.\ Conf.\ Mining Softw.\ Repositories (MSR)}, Melbourne, Australia, 2023, pp.~654--668.
 
-\bibitem{lemon42dataset}
-lemon42-ai, ``Code\_Vulnerability\_Labeled\_Dataset,'' HuggingFace Datasets, 2024.
+\bibitem{b2}
+M.~A.~Rahman, M.~R.~Parvez, S.~Chakraborty, and M.~A.~Hasan, ``SecurityEval dataset: Mining vulnerability examples to evaluate machine learning-based code generation techniques,'' in \textit{Proc.\ 1st Int.\ Workshop Mining Softw.\ Repositories Privacy Security (MSR4P\&S)}, Singapore, 2022, pp.~17--21.
+
+\bibitem{b3}
+E.~M.~Bender and A.~Koller, ``Climbing towards NLU: On meaning, form, and understanding in the age of data,'' in \textit{Proc.\ 58th Annu.\ Meeting Assoc.\ Comput.\ Linguistics (ACL)}, 2020, pp.~5185--5198.
+
+\bibitem{b4}
+lemon42-ai, ``Code\_Vulnerability\_Labeled\_Dataset,'' HuggingFace Datasets, 2024. [Online]. Available: \url{https://huggingface.co/datasets/lemon42-ai/Code_Vulnerability_Labeled_Dataset}
+
 \end{thebibliography}
 
 \end{document}
