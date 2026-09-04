@@ -1,0 +1,41 @@
+{
+  "cartpole": {
+    "env": "CartPole-v1",
+    "obs_dim": 4,
+    "act_dim": 2,
+    "hidden": 64,
+    "episodes": 1000,
+    "final_avg_reward": 461.1,
+    "convergence_episode": 975,
+    "wall_clock_seconds": 606.9,
+    "peak_memory_mb": 324,
+    "memory_delta_mb": 31,
+    "episodes_per_second": 1.6
+  },
+  "acrobot": {
+    "env": "Acrobot-v1",
+    "obs_dim": 6,
+    "act_dim": 3,
+    "hidden": 128,
+    "episodes": 1500,
+    "final_avg_reward": -80.2,
+    "convergence_episode": 728,
+    "wall_clock_seconds": 768.4,
+    "peak_memory_mb": 324,
+    "memory_delta_mb": 0,
+    "episodes_per_second": 2.0
+  },
+  "lunarlander": {
+    "env": "LunarLander-v3",
+    "obs_dim": 8,
+    "act_dim": 4,
+    "hidden": 128,
+    "episodes": 2000,
+    "final_avg_reward": 225.1,
+    "convergence_episode": 677,
+    "wall_clock_seconds": 2207.8,
+    "peak_memory_mb": 341,
+    "memory_delta_mb": 8,
+    "episodes_per_second": 0.9
+  }
+}

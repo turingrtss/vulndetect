@@ -1,0 +1,121 @@
+============================================================
+RL on Constrained Hardware
+Hardware: ARM64, 12GB RAM, 2 CPU cores, no GPU
+PyTorch: 2.14.0+cpu
+Initial memory: 225 MB
+============================================================
+
+============================================================
+Training: CartPole-v1
+============================================================
+  Obs dim: 4, Act dim: 2
+  Hidden: 64, LR: 0.001
+  Episode   100 | Avg Reward:     40.2 | Epsilon: 0.606 | Loss: 0.4184 | Time: 10s | Mem: 310MB
+  Episode   200 | Avg Reward:    114.7 | Epsilon: 0.367 | Loss: 0.6372 | Time: 41s | Mem: 312MB
+  Episode   300 | Avg Reward:    107.7 | Epsilon: 0.222 | Loss: 0.9065 | Time: 69s | Mem: 316MB
+  Episode   400 | Avg Reward:    118.6 | Epsilon: 0.135 | Loss: 1.7955 | Time: 101s | Mem: 320MB
+  Episode   500 | Avg Reward:    214.7 | Epsilon: 0.082 | Loss: 1.4836 | Time: 158s | Mem: 324MB
+  Episode   600 | Avg Reward:    215.3 | Epsilon: 0.049 | Loss: 2.4796 | Time: 216s | Mem: 324MB
+  Episode   700 | Avg Reward:    233.9 | Epsilon: 0.030 | Loss: 2.3796 | Time: 277s | Mem: 324MB
+  Episode   800 | Avg Reward:    345.1 | Epsilon: 0.018 | Loss: 4.9095 | Time: 371s | Mem: 324MB
+  Episode   900 | Avg Reward:    412.1 | Epsilon: 0.011 | Loss: 12.1480 | Time: 482s | Mem: 324MB
+  ✓ SOLVED at episode 975 (avg reward: 477.6)
+  Episode  1000 | Avg Reward:    461.1 | Epsilon: 0.010 | Loss: 13.2318 | Time: 607s | Mem: 324MB
+
+  Results:
+    Final avg reward (100 ep): 461.1
+    Convergence: episode 975
+    Wall clock: 606.9s (10.1 min)
+    Peak memory: 324 MB (delta: 31 MB)
+    Speed: 1.6 episodes/sec
+
+============================================================
+Training: Acrobot-v1
+============================================================
+  Obs dim: 6, Act dim: 3
+  Hidden: 128, LR: 0.0005
+  Episode   100 | Avg Reward:   -484.6 | Epsilon: 0.606 | Loss: 0.0988 | Time: 149s | Mem: 324MB
+  Episode   200 | Avg Reward:   -330.2 | Epsilon: 0.367 | Loss: 0.3187 | Time: 255s | Mem: 324MB
+  Episode   300 | Avg Reward:   -281.9 | Epsilon: 0.222 | Loss: 0.3343 | Time: 345s | Mem: 324MB
+  Episode   400 | Avg Reward:   -220.0 | Epsilon: 0.135 | Loss: 0.4130 | Time: 416s | Mem: 324MB
+  Episode   500 | Avg Reward:   -181.4 | Epsilon: 0.082 | Loss: 0.6659 | Time: 477s | Mem: 324MB
+  Episode   600 | Avg Reward:   -122.7 | Epsilon: 0.049 | Loss: 0.7060 | Time: 517s | Mem: 324MB
+  Episode   700 | Avg Reward:   -104.5 | Epsilon: 0.030 | Loss: 0.9093 | Time: 551s | Mem: 324MB
+  ✓ SOLVED at episode 728 (avg reward: -99.8)
+  Episode   800 | Avg Reward:    -89.3 | Epsilon: 0.018 | Loss: 0.8392 | Time: 581s | Mem: 324MB
+  Episode   900 | Avg Reward:    -83.0 | Epsilon: 0.011 | Loss: 0.9418 | Time: 608s | Mem: 324MB
+  Episode  1000 | Avg Reward:    -78.9 | Epsilon: 0.010 | Loss: 0.9052 | Time: 634s | Mem: 324MB
+  Episode  1100 | Avg Reward:    -82.5 | Epsilon: 0.010 | Loss: 0.9552 | Time: 660s | Mem: 324MB
+  Episode  1200 | Avg Reward:    -79.5 | Epsilon: 0.010 | Loss: 0.8439 | Time: 687s | Mem: 324MB
+  Episode  1300 | Avg Reward:    -82.5 | Epsilon: 0.010 | Loss: 0.9241 | Time: 714s | Mem: 324MB
+  Episode  1400 | Avg Reward:    -84.6 | Epsilon: 0.010 | Loss: 0.8122 | Time: 742s | Mem: 324MB
+  Episode  1500 | Avg Reward:    -80.2 | Epsilon: 0.010 | Loss: 1.0142 | Time: 768s | Mem: 324MB
+
+  Results:
+    Final avg reward (100 ep): -80.2
+    Convergence: episode 728
+    Wall clock: 768.4s (12.8 min)
+    Peak memory: 324 MB (delta: 0 MB)
+    Speed: 2.0 episodes/sec
+
+============================================================
+Training: LunarLander-v3
+============================================================
+  Obs dim: 8, Act dim: 4
+  Hidden: 128, LR: 0.0005
+  Episode   100 | Avg Reward:   -119.3 | Epsilon: 0.606 | Loss: 43.8527 | Time: 35s | Mem: 332MB
+  Episode   200 | Avg Reward:    -57.4 | Epsilon: 0.367 | Loss: 11.0222 | Time: 162s | Mem: 338MB
+  Episode   300 | Avg Reward:    -26.6 | Epsilon: 0.222 | Loss: 3.9360 | Time: 426s | Mem: 338MB
+  Episode   400 | Avg Reward:     85.8 | Epsilon: 0.135 | Loss: 6.3790 | Time: 646s | Mem: 339MB
+  Episode   500 | Avg Reward:    135.0 | Epsilon: 0.082 | Loss: 12.9614 | Time: 833s | Mem: 339MB
+  Episode   600 | Avg Reward:    191.0 | Epsilon: 0.049 | Loss: 14.8939 | Time: 971s | Mem: 339MB
+  ✓ SOLVED at episode 677 (avg reward: 200.2)
+  Episode   700 | Avg Reward:    199.9 | Epsilon: 0.030 | Loss: 15.9321 | Time: 1087s | Mem: 339MB
+  Episode   800 | Avg Reward:    201.5 | Epsilon: 0.018 | Loss: 13.3370 | Time: 1198s | Mem: 339MB
+  Episode   900 | Avg Reward:    223.3 | Epsilon: 0.011 | Loss: 13.3245 | Time: 1307s | Mem: 339MB
+  Episode  1000 | Avg Reward:    225.7 | Epsilon: 0.010 | Loss: 10.1975 | Time: 1393s | Mem: 339MB
+  Episode  1100 | Avg Reward:    240.3 | Epsilon: 0.010 | Loss: 10.3255 | Time: 1486s | Mem: 339MB
+  Episode  1200 | Avg Reward:    230.7 | Epsilon: 0.010 | Loss: 10.3628 | Time: 1574s | Mem: 339MB
+  Episode  1300 | Avg Reward:    244.8 | Epsilon: 0.010 | Loss: 11.1912 | Time: 1653s | Mem: 339MB
+  Episode  1400 | Avg Reward:    257.9 | Epsilon: 0.010 | Loss: 9.5204 | Time: 1730s | Mem: 339MB
+  Episode  1500 | Avg Reward:    259.2 | Epsilon: 0.010 | Loss: 7.1363 | Time: 1802s | Mem: 339MB
+  Episode  1600 | Avg Reward:    260.6 | Epsilon: 0.010 | Loss: 11.3437 | Time: 1884s | Mem: 340MB
+  Episode  1700 | Avg Reward:    270.1 | Epsilon: 0.010 | Loss: 5.4887 | Time: 1959s | Mem: 340MB
+  Episode  1800 | Avg Reward:    246.8 | Epsilon: 0.010 | Loss: 15.5590 | Time: 2033s | Mem: 340MB
+  Episode  1900 | Avg Reward:    247.4 | Epsilon: 0.010 | Loss: 8.3862 | Time: 2120s | Mem: 340MB
+  Episode  2000 | Avg Reward:    225.1 | Epsilon: 0.010 | Loss: 8.3609 | Time: 2208s | Mem: 341MB
+
+  Results:
+    Final avg reward (100 ep): 225.1
+    Convergence: episode 677
+    Wall clock: 2207.8s (36.8 min)
+    Peak memory: 341 MB (delta: 8 MB)
+    Speed: 0.9 episodes/sec
+
+============================================================
+SUMMARY
+============================================================
+
+Environment          Solved?    Episodes   Time       Mem (MB)   Ep/sec    
+----------------------------------------------------------------------
+CartPole-v1          Ep 975     1000       607        324        1.6       
+Acrobot-v1           Ep 728     1500       768        324        1.9       
+LunarLander-v3       Ep 677     2000       2208       340        0.9       
+Traceback (most recent call last):
+  File "/home/ubuntu/projects/vulndetect/rl_experiment.py", line 314, in <module>
+    main()
+  File "/home/ubuntu/projects/vulndetect/rl_experiment.py", line 308, in main
+    json.dump(save_results, f, indent=2)
+  File "/usr/lib/python3.10/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+  File "/usr/lib/python3.10/json/encoder.py", line 431, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/usr/lib/python3.10/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/usr/lib/python3.10/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/usr/lib/python3.10/json/encoder.py", line 438, in _iterencode
+    o = _default(o)
+  File "/usr/lib/python3.10/json/encoder.py", line 179, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type int64 is not JSON serializable
