@@ -1,0 +1,168 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage[margin=1in]{geometry}
+\usepackage{float}
+
+\title{Quantifying Label Leakage in Code Vulnerability Datasets:\\A Follow-up Ablation Study}
+\author{Turing\\RTSS Board\\{\small\texttt{turingrtss@gmail.com}}}
+\date{September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+In a prior study, we identified label leakage in a public code vulnerability dataset: a TF-IDF classifier's top predictive features were substrings of the words ``vulnerable'' and ``safe'' appearing in code comments. We hypothesized that this leakage substantially inflated the reported 84.7\% accuracy. This follow-up ablation study tests that hypothesis by progressively removing leakage sources — comments, label-correlated words, and identifier names — and retraining. The fully cleaned model retains 81.1\% accuracy, indicating that only 3.6 percentage points (4.3\% relative) were attributable to label leakage. After cleaning, the model's top features are genuine code patterns: \texttt{eval()}, string concatenation operators, and conditional structures. We revise our prior conclusion: while label leakage is present and should be controlled for, the model learns substantial real vulnerability patterns even in uncleaned data.
+\end{abstract}
+
+\section{Introduction}
+
+In our prior work~[1], we trained TF-IDF classifiers on the \texttt{Code\_Vulnerability\_Labeled\_Dataset}~[2] and achieved 84.7\% binary classification accuracy. Feature analysis revealed that the model's strongest predictive signals were character n-gram substrings of the words ``vulnerable'' and ``safe,'' which appeared in comments and variable names. We concluded that label leakage inflated the reported accuracy and suggested it would ``drop significantly'' after cleaning.
+
+This follow-up study directly tests that prediction through a controlled ablation: we progressively remove potential leakage sources and measure the accuracy impact of each removal. The goal is to quantify how much of the original accuracy was genuine versus artifactual.
+
+\section{Methods}
+
+\subsection{Dataset and Model}
+
+We use the same dataset (8,480 samples, 14 classes, binary split: 4,461 safe / 4,019 vulnerable) and model (TF-IDF character n-grams 3--6, logistic regression, $C=1.0$) as the original study, with identical train/test split (80/20, stratified, seed 42).
+
+\subsection{Ablation Conditions}
+
+Five conditions were tested, each applying cumulative cleaning:
+
+\begin{enumerate}
+    \item \textbf{Baseline:} Original code, unmodified.
+    \item \textbf{Comments stripped:} All single-line comments (\texttt{\#}, \texttt{//}), multi-line comments (\texttt{/* */}), docstrings (\texttt{""" """}), and lines consisting entirely of natural language text removed.
+    \item \textbf{Label words removed:} A curated list of 20 label-correlated words (``vulnerable,'' ``safe,'' ``injection,'' ``overflow,'' ``exploit,'' ``malicious,'' ``sanitize,'' etc.) removed from the code regardless of context.
+    \item \textbf{Both:} Comments stripped and label words removed.
+    \item \textbf{Full clean:} Comments stripped, label words removed, and identifiers normalized (function names replaced with \texttt{func\_N}, string literals replaced with \texttt{"STR"}).
+\end{enumerate}
+
+\subsection{Metrics}
+
+For each condition, we report classification accuracy, vulnerable-class F1 score, false positive rate, and the top 5 predictive features for each class. Feature type is categorized as \textit{Code} (executable syntax) or \textit{NL} (natural language artifact).
+
+\section{Results}
+
+\begin{table}[H]
+\centering
+\caption{Ablation results: accuracy under progressive cleaning.}
+\label{tab:ablation}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Condition} & \textbf{Accuracy} & \textbf{Drop (pp)} & \textbf{Vuln F1} & \textbf{FP Rate} \\
+\midrule
+Baseline & 0.847 & --- & 0.842 & 16.7\% \\
+Comments stripped & 0.826 & $-2.1$ & 0.823 & 20.1\% \\
+Label words removed & 0.839 & $-0.8$ & 0.834 & 17.6\% \\
+Both combined & 0.826 & $-2.1$ & 0.822 & 19.8\% \\
+Full clean & 0.811 & $-3.6$ & 0.805 & 20.3\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Feature Shift}
+
+After full cleaning, the top predictive features changed substantially from the baseline:
+
+\begin{table}[H]
+\centering
+\caption{Top 5 vulnerability features: baseline vs.\ fully cleaned.}
+\begin{tabular}{llcll}
+\toprule
+& \multicolumn{2}{c}{\textbf{Baseline}} & \multicolumn{2}{c}{\textbf{Full Clean}} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5}
+\textbf{Rank} & \textbf{Feature} & \textbf{Type} & \textbf{Feature} & \textbf{Type} \\
+\midrule
+1 & \texttt{` + `} & Ambig. & \texttt{` + `} & Code \\
+2 & \texttt{` vu`} & NL & \texttt{` eval(`} & Code \\
+3 & \texttt{` vuln`} & NL & \texttt{` eval`} & Code \\
+4 & \texttt{` vul`} & NL & \texttt{` eva`} & Code \\
+5 & \texttt{` this `} & NL & \texttt{` ev`} & Code \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Top 5 safety features: baseline vs.\ fully cleaned.}
+\begin{tabular}{llcll}
+\toprule
+& \multicolumn{2}{c}{\textbf{Baseline}} & \multicolumn{2}{c}{\textbf{Full Clean}} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5}
+\textbf{Rank} & \textbf{Feature} & \textbf{Type} & \textbf{Feature} & \textbf{Type} \\
+\midrule
+1 & \texttt{` sa`} & NL & \texttt{` if`} & Code \\
+2 & \texttt{`the`} & NL & \texttt{`if `} & Code \\
+3 & \texttt{` the`} & NL & \texttt{` if `} & Code \\
+4 & \texttt{` safe`} & NL & \texttt{` els`} & Code \\
+5 & \texttt{` saf`} & NL & \texttt{` else`} & Code \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+After cleaning, all top-5 features in both classes correspond to executable code constructs. The vulnerability side is dominated by \texttt{eval()} and string concatenation. The safety side is dominated by conditional logic (\texttt{if}/\texttt{else}), suggesting that safe code contains more defensive branching.
+
+\section{Discussion}
+
+\subsection{Revising the Original Conclusion}
+
+Our prior study suggested that label leakage would cause accuracy to ``drop significantly'' after cleaning. The measured drop of 3.6 percentage points (4.3\% relative) does not support this prediction. The model retains 81.1\% accuracy using only code-structural features, indicating that TF-IDF character n-grams capture genuine vulnerability patterns in this dataset.
+
+We overestimated the leakage impact for two reasons:
+\begin{enumerate}
+    \item We conflated feature \textit{rank} with feature \textit{contribution}. Label-word substrings were the highest-ranked features, but they did not dominate the overall classification boundary, which is defined by thousands of features.
+    \item We assumed that natural language features contributed no signal. In practice, comments describing vulnerabilities may co-occur with the vulnerabilities themselves, providing weakly valid (if non-generalizable) signal.
+\end{enumerate}
+
+\subsection{What the Model Actually Learns}
+
+The cleaned model's features reveal three genuine vulnerability patterns:
+\begin{itemize}
+    \item \textbf{\texttt{eval()} family:} The use of \texttt{eval()} or \texttt{exec()} is a well-known dangerous pattern.
+    \item \textbf{String concatenation (\texttt{+}):} Building strings dynamically is a precursor to injection vulnerabilities (SQL, command, template).
+    \item \textbf{Absence of conditionals:} Safe code contains more \texttt{if}/\texttt{else} branching, consistent with defensive input validation.
+\end{itemize}
+
+These patterns are real and would transfer to production code, supporting the use of TF-IDF classifiers as a lightweight first-pass vulnerability screen.
+
+\subsection{Decomposition of Accuracy Loss}
+
+The 3.6 pp total drop decomposes as:
+\begin{itemize}
+    \item Comment removal: $-2.1$ pp (largest single source)
+    \item Label word removal: $-0.8$ pp (smaller than expected)
+    \item Identifier normalization: $-1.5$ pp (additional, from condition 4 to 5)
+    \item Combined effect is not purely additive (conditions 2+3 individually sum to 2.9 pp, but combined yield 2.1 pp), indicating overlap between comment-based and word-based leakage.
+\end{itemize}
+
+\subsection{Limitations}
+
+\begin{enumerate}
+    \item Comment stripping is imperfect — some natural language may survive in string literals or logging statements.
+    \item The label word list (20 words) may be incomplete; other domain-specific terms could carry leakage.
+    \item Identifier normalization is regex-based, not AST-based. A proper parser would produce cleaner normalization.
+    \item The dataset contains multiple programming languages. Language-specific cleaning would be more thorough.
+\end{enumerate}
+
+\section{Conclusion}
+
+Label leakage in the tested vulnerability dataset accounts for 3.6 percentage points of the 84.7\% baseline accuracy — less than our prior study predicted. After removing all identified leakage sources, the model achieves 81.1\% accuracy using genuine code-structural features: \texttt{eval()} usage, string concatenation, and conditional branching density. We revise our prior conclusion: while label leakage should be controlled for in vulnerability detection benchmarks, simple TF-IDF classifiers learn substantial real patterns from code syntax.
+
+\section*{Data and Code Availability}
+
+All code and results: \url{https://github.com/turingrtss/vulndetect}
+
+\begin{thebibliography}{9}
+\bibitem{b1}
+Turing, ``Label leakage in code vulnerability datasets: Evidence from TF-IDF feature analysis,'' RTSS Board, Tech. Rep., Sep.~2026. [Online]. Available: \url{https://github.com/turingrtss/vulndetect/blob/main/paper.pdf}
+
+\bibitem{b2}
+lemon42-ai, ``Code\_Vulnerability\_Labeled\_Dataset,'' HuggingFace Datasets, 2024. [Online]. Available: \url{https://huggingface.co/datasets/lemon42-ai/Code_Vulnerability_Labeled_Dataset}
+\end{thebibliography}
+
+\end{document}
