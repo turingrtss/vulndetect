@@ -1,0 +1,24 @@
+{
+  "pong_ram": {
+    "mode": "ram",
+    "episodes": 500,
+    "final_avg_reward": -14.8,
+    "best_avg_reward": -14.25,
+    "wall_clock_seconds": 6104.9,
+    "avg_episode_seconds": 12.21,
+    "peak_memory_mb": 497.6,
+    "param_count": 100358,
+    "episodes_per_second": 0.082
+  },
+  "pong_image": {
+    "mode": "image",
+    "episodes": 200,
+    "final_avg_reward": -18.76,
+    "best_avg_reward": -18.76,
+    "wall_clock_seconds": 6240.9,
+    "avg_episode_seconds": 31.2,
+    "peak_memory_mb": 3452.0,
+    "param_count": 674614,
+    "episodes_per_second": 0.032
+  }
+}

@@ -22,3 +22,105 @@ A.L.E: Arcade Learning Environment (version 0.12.1+8a8fafb)
   Ep   80 | Avg Reward:  -20.2 | Eps: 0.670 | Ep Time: 5.2s | Steps: 1082 | Mem: 455MB | Elapsed: 351s
   Ep   90 | Avg Reward:  -20.7 | Eps: 0.637 | Ep Time: 4.3s | Steps: 792 | Mem: 471MB | Elapsed: 394s
   Ep  100 | Avg Reward:  -20.6 | Eps: 0.606 | Ep Time: 4.8s | Steps: 939 | Mem: 487MB | Elapsed: 441s
+  Ep  110 | Avg Reward:  -20.0 | Eps: 0.576 | Ep Time: 5.6s | Steps: 912 | Mem: 498MB | Elapsed: 497s
+  Ep  120 | Avg Reward:  -19.4 | Eps: 0.548 | Ep Time: 5.7s | Steps: 1081 | Mem: 498MB | Elapsed: 554s
+  Ep  130 | Avg Reward:  -20.0 | Eps: 0.521 | Ep Time: 5.2s | Steps: 1018 | Mem: 498MB | Elapsed: 606s
+  Ep  140 | Avg Reward:  -19.5 | Eps: 0.496 | Ep Time: 5.4s | Steps: 1199 | Mem: 498MB | Elapsed: 661s
+  Ep  150 | Avg Reward:  -19.0 | Eps: 0.471 | Ep Time: 5.7s | Steps: 1289 | Mem: 498MB | Elapsed: 718s
+  Ep  160 | Avg Reward:  -18.5 | Eps: 0.448 | Ep Time: 5.9s | Steps: 1524 | Mem: 498MB | Elapsed: 777s
+  Ep  170 | Avg Reward:  -17.3 | Eps: 0.427 | Ep Time: 7.1s | Steps: 1229 | Mem: 498MB | Elapsed: 849s
+  Ep  180 | Avg Reward:  -17.6 | Eps: 0.406 | Ep Time: 7.8s | Steps: 1287 | Mem: 498MB | Elapsed: 927s
+  Ep  190 | Avg Reward:  -17.8 | Eps: 0.386 | Ep Time: 8.7s | Steps: 1532 | Mem: 498MB | Elapsed: 1014s
+  Ep  200 | Avg Reward:  -17.2 | Eps: 0.367 | Ep Time: 8.6s | Steps: 2193 | Mem: 498MB | Elapsed: 1100s
+  Ep  210 | Avg Reward:  -16.0 | Eps: 0.349 | Ep Time: 8.9s | Steps: 1336 | Mem: 498MB | Elapsed: 1189s
+  Ep  220 | Avg Reward:  -16.4 | Eps: 0.332 | Ep Time: 11.0s | Steps: 1674 | Mem: 498MB | Elapsed: 1299s
+  Ep  230 | Avg Reward:  -17.5 | Eps: 0.316 | Ep Time: 28.7s | Steps: 1731 | Mem: 498MB | Elapsed: 1586s
+  Ep  240 | Avg Reward:  -17.2 | Eps: 0.300 | Ep Time: 33.2s | Steps: 1998 | Mem: 498MB | Elapsed: 1918s
+  Ep  250 | Avg Reward:  -15.6 | Eps: 0.286 | Ep Time: 47.2s | Steps: 1425 | Mem: 498MB | Elapsed: 2391s
+  Ep  260 | Avg Reward:  -15.0 | Eps: 0.272 | Ep Time: 49.4s | Steps: 2085 | Mem: 496MB | Elapsed: 2885s
+  Ep  270 | Avg Reward:  -15.4 | Eps: 0.258 | Ep Time: 36.6s | Steps: 1998 | Mem: 498MB | Elapsed: 3251s
+  Ep  280 | Avg Reward:  -14.6 | Eps: 0.246 | Ep Time: 11.2s | Steps: 2258 | Mem: 498MB | Elapsed: 3363s
+  Ep  290 | Avg Reward:  -15.6 | Eps: 0.234 | Ep Time: 11.3s | Steps: 2110 | Mem: 498MB | Elapsed: 3476s
+  Ep  300 | Avg Reward:  -15.0 | Eps: 0.222 | Ep Time: 12.0s | Steps: 2320 | Mem: 498MB | Elapsed: 3596s
+  Ep  310 | Avg Reward:  -16.7 | Eps: 0.211 | Ep Time: 11.5s | Steps: 1972 | Mem: 498MB | Elapsed: 3711s
+  Ep  320 | Avg Reward:  -15.6 | Eps: 0.201 | Ep Time: 12.1s | Steps: 1723 | Mem: 498MB | Elapsed: 3832s
+  Ep  330 | Avg Reward:  -15.6 | Eps: 0.191 | Ep Time: 12.9s | Steps: 2934 | Mem: 498MB | Elapsed: 3962s
+  Ep  340 | Avg Reward:  -16.1 | Eps: 0.182 | Ep Time: 12.3s | Steps: 2130 | Mem: 498MB | Elapsed: 4084s
+  Ep  350 | Avg Reward:  -16.0 | Eps: 0.173 | Ep Time: 12.0s | Steps: 1526 | Mem: 498MB | Elapsed: 4204s
+  Ep  360 | Avg Reward:  -15.9 | Eps: 0.165 | Ep Time: 12.1s | Steps: 1890 | Mem: 498MB | Elapsed: 4326s
+  Ep  370 | Avg Reward:  -16.1 | Eps: 0.157 | Ep Time: 12.3s | Steps: 2454 | Mem: 498MB | Elapsed: 4448s
+  Ep  380 | Avg Reward:  -14.8 | Eps: 0.149 | Ep Time: 13.6s | Steps: 2858 | Mem: 498MB | Elapsed: 4585s
+  Ep  390 | Avg Reward:  -14.5 | Eps: 0.142 | Ep Time: 13.3s | Steps: 2204 | Mem: 498MB | Elapsed: 4718s
+  Ep  400 | Avg Reward:  -14.4 | Eps: 0.135 | Ep Time: 14.3s | Steps: 2386 | Mem: 498MB | Elapsed: 4860s
+  Ep  410 | Avg Reward:  -14.3 | Eps: 0.128 | Ep Time: 13.7s | Steps: 2594 | Mem: 498MB | Elapsed: 4997s
+  Ep  420 | Avg Reward:  -13.3 | Eps: 0.122 | Ep Time: 13.1s | Steps: 2703 | Mem: 498MB | Elapsed: 5129s
+  Ep  430 | Avg Reward:  -15.5 | Eps: 0.116 | Ep Time: 11.3s | Steps: 2130 | Mem: 498MB | Elapsed: 5241s
+  Ep  440 | Avg Reward:  -15.1 | Eps: 0.110 | Ep Time: 12.2s | Steps: 2663 | Mem: 498MB | Elapsed: 5364s
+  Ep  450 | Avg Reward:  -15.4 | Eps: 0.105 | Ep Time: 11.6s | Steps: 2222 | Mem: 498MB | Elapsed: 5480s
+  Ep  460 | Avg Reward:  -14.0 | Eps: 0.100 | Ep Time: 12.9s | Steps: 3467 | Mem: 498MB | Elapsed: 5608s
+  Ep  470 | Avg Reward:  -15.6 | Eps: 0.095 | Ep Time: 11.7s | Steps: 2754 | Mem: 498MB | Elapsed: 5725s
+  Ep  480 | Avg Reward:  -14.3 | Eps: 0.090 | Ep Time: 12.9s | Steps: 2623 | Mem: 498MB | Elapsed: 5854s
+  Ep  490 | Avg Reward:  -13.8 | Eps: 0.086 | Ep Time: 13.3s | Steps: 2508 | Mem: 498MB | Elapsed: 5987s
+  Ep  500 | Avg Reward:  -16.3 | Eps: 0.082 | Ep Time: 11.8s | Steps: 2240 | Mem: 498MB | Elapsed: 6105s
+
+  RESULTS (RAM):
+    Episodes: 500
+    Final avg reward (50 ep): -14.8
+    Wall clock: 6105s (101.7 min)
+    Avg episode time: 12.2s
+    Peak memory: 498 MB
+    Throughput: 0.082 ep/s
+
+============================================================
+Atari Pong - IMAGE mode
+============================================================
+  Network params: 674,614
+  Initial memory: 481 MB
+  Ep   10 | Avg Reward:  -20.5 | Eps: 0.951 | Ep Time: 23.6s | Steps: 1078 | Mem: 636MB | Elapsed: 236s
+  Ep   20 | Avg Reward:  -20.6 | Eps: 0.905 | Ep Time: 24.1s | Steps: 912 | Mem: 918MB | Elapsed: 477s
+  Ep   30 | Avg Reward:  -20.4 | Eps: 0.860 | Ep Time: 24.3s | Steps: 993 | Mem: 1203MB | Elapsed: 720s
+  Ep   40 | Avg Reward:  -20.8 | Eps: 0.818 | Ep Time: 24.1s | Steps: 764 | Mem: 1484MB | Elapsed: 961s
+  Ep   50 | Avg Reward:  -20.3 | Eps: 0.778 | Ep Time: 25.4s | Steps: 824 | Mem: 1780MB | Elapsed: 1215s
+  Ep   60 | Avg Reward:  -20.2 | Eps: 0.740 | Ep Time: 25.5s | Steps: 940 | Mem: 2079MB | Elapsed: 1470s
+  Ep   70 | Avg Reward:  -20.1 | Eps: 0.704 | Ep Time: 26.7s | Steps: 1052 | Mem: 2392MB | Elapsed: 1737s
+  Ep   80 | Avg Reward:  -20.4 | Eps: 0.670 | Ep Time: 25.4s | Steps: 852 | Mem: 2684MB | Elapsed: 1992s
+  Ep   90 | Avg Reward:  -20.2 | Eps: 0.637 | Ep Time: 27.1s | Steps: 1036 | Mem: 2996MB | Elapsed: 2263s
+  Ep  100 | Avg Reward:  -20.4 | Eps: 0.606 | Ep Time: 27.6s | Steps: 1583 | Mem: 3311MB | Elapsed: 2538s
+  Ep  110 | Avg Reward:  -19.7 | Eps: 0.576 | Ep Time: 31.6s | Steps: 1489 | Mem: 3452MB | Elapsed: 2854s
+  Ep  120 | Avg Reward:  -19.7 | Eps: 0.548 | Ep Time: 34.4s | Steps: 1211 | Mem: 3452MB | Elapsed: 3198s
+  Ep  130 | Avg Reward:  -19.2 | Eps: 0.521 | Ep Time: 35.0s | Steps: 1119 | Mem: 3452MB | Elapsed: 3549s
+  Ep  140 | Avg Reward:  -20.1 | Eps: 0.496 | Ep Time: 33.1s | Steps: 1114 | Mem: 3452MB | Elapsed: 3880s
+  Ep  150 | Avg Reward:  -19.4 | Eps: 0.471 | Ep Time: 35.9s | Steps: 1143 | Mem: 3452MB | Elapsed: 4239s
+  Ep  160 | Avg Reward:  -18.5 | Eps: 0.448 | Ep Time: 45.5s | Steps: 1646 | Mem: 3452MB | Elapsed: 4694s
+  Ep  170 | Avg Reward:  -18.6 | Eps: 0.427 | Ep Time: 41.8s | Steps: 1149 | Mem: 3452MB | Elapsed: 5112s
+  Ep  180 | Avg Reward:  -19.8 | Eps: 0.406 | Ep Time: 34.3s | Steps: 1322 | Mem: 3452MB | Elapsed: 5455s
+  Ep  190 | Avg Reward:  -18.8 | Eps: 0.386 | Ep Time: 38.8s | Steps: 1553 | Mem: 3452MB | Elapsed: 5843s
+  Ep  200 | Avg Reward:  -18.1 | Eps: 0.367 | Ep Time: 39.8s | Steps: 1505 | Mem: 3452MB | Elapsed: 6241s
+
+  RESULTS (IMAGE):
+    Episodes: 200
+    Final avg reward (50 ep): -18.76
+    Wall clock: 6241s (104.0 min)
+    Avg episode time: 31.2s
+    Peak memory: 3452 MB
+    Throughput: 0.032 ep/s
+
+============================================================
+SUMMARY: Where's the Wall?
+============================================================
+
+  pong_ram:
+    Reward: -14.8
+    Time: 6104.9s (101.7 min)
+    Speed: 0.082 ep/s
+    Memory: 497.6 MB
+    Params: 100,358
+
+  pong_image:
+    Reward: -18.76
+    Time: 6240.9s (104.0 min)
+    Speed: 0.032 ep/s
+    Memory: 3452.0 MB
+    Params: 674,614
+
+Results saved to atari_results.json
