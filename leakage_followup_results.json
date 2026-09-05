@@ -1,0 +1,262 @@
+{
+  "baseline": {
+    "name": "Baseline (original)",
+    "accuracy": 0.8467,
+    "vuln_f1": 0.842,
+    "safe_f1": 0.8511,
+    "fp_rate": 16.7,
+    "train_time": 0.47,
+    "top_vuln_features": [
+      [
+        " + ",
+        1.188
+      ],
+      [
+        " vu",
+        1.173
+      ],
+      [
+        " vuln",
+        1.173
+      ],
+      [
+        " vul",
+        1.173
+      ],
+      [
+        " this ",
+        1.171
+      ]
+    ],
+    "top_safe_features": [
+      [
+        " sa",
+        -1.921
+      ],
+      [
+        "the",
+        -1.672
+      ],
+      [
+        " the",
+        -1.639
+      ],
+      [
+        " safe",
+        -1.628
+      ],
+      [
+        " saf",
+        -1.628
+      ]
+    ]
+  },
+  "no_comments": {
+    "name": "Comments stripped",
+    "accuracy": 0.8255,
+    "vuln_f1": 0.8228,
+    "safe_f1": 0.8281,
+    "fp_rate": 20.1,
+    "train_time": 0.43,
+    "top_vuln_features": [
+      [
+        " eval(",
+        1.346
+      ],
+      [
+        " + ",
+        1.339
+      ],
+      [
+        " ev",
+        1.262
+      ],
+      [
+        " eval",
+        1.207
+      ],
+      [
+        " eva",
+        1.207
+      ]
+    ],
+    "top_safe_features": [
+      [
+        " ?:",
+        -1.74
+      ],
+      [
+        "?: ",
+        -1.74
+      ],
+      [
+        " ?: ",
+        -1.74
+      ],
+      [
+        " if",
+        -1.72
+      ],
+      [
+        " sa",
+        -1.709
+      ]
+    ]
+  },
+  "no_label_words": {
+    "name": "Label words removed",
+    "accuracy": 0.839,
+    "vuln_f1": 0.8344,
+    "safe_f1": 0.8434,
+    "fp_rate": 17.6,
+    "train_time": 0.83,
+    "top_vuln_features": [
+      [
+        " this ",
+        1.249
+      ],
+      [
+        " + ",
+        1.207
+      ],
+      [
+        " eval(",
+        1.196
+      ],
+      [
+        " thi",
+        1.142
+      ],
+      [
+        " this",
+        1.133
+      ]
+    ],
+    "top_safe_features": [
+      [
+        "the",
+        -1.689
+      ],
+      [
+        " the",
+        -1.664
+      ],
+      [
+        " sa",
+        -1.64
+      ],
+      [
+        "secu",
+        -1.63
+      ],
+      [
+        "secur",
+        -1.63
+      ]
+    ]
+  },
+  "no_comments_no_labels": {
+    "name": "Comments stripped + label words removed",
+    "accuracy": 0.8255,
+    "vuln_f1": 0.8223,
+    "safe_f1": 0.8285,
+    "fp_rate": 19.8,
+    "train_time": 0.98,
+    "top_vuln_features": [
+      [
+        " + ",
+        1.342
+      ],
+      [
+        " eval(",
+        1.334
+      ],
+      [
+        " ev",
+        1.247
+      ],
+      [
+        " eval",
+        1.194
+      ],
+      [
+        " eva",
+        1.194
+      ]
+    ],
+    "top_safe_features": [
+      [
+        " ?: ",
+        -1.736
+      ],
+      [
+        " ?:",
+        -1.736
+      ],
+      [
+        "?: ",
+        -1.736
+      ],
+      [
+        " if",
+        -1.715
+      ],
+      [
+        "se ",
+        -1.688
+      ]
+    ]
+  },
+  "full_clean": {
+    "name": "Full clean (comments + labels + identifiers)",
+    "accuracy": 0.8107,
+    "vuln_f1": 0.8053,
+    "safe_f1": 0.8158,
+    "fp_rate": 20.3,
+    "train_time": 0.59,
+    "top_vuln_features": [
+      [
+        " + ",
+        1.639
+      ],
+      [
+        " eval(",
+        1.262
+      ],
+      [
+        " eval",
+        1.153
+      ],
+      [
+        " eva",
+        1.153
+      ],
+      [
+        " ev",
+        1.14
+      ]
+    ],
+    "top_safe_features": [
+      [
+        " if",
+        -2.003
+      ],
+      [
+        "if ",
+        -1.954
+      ],
+      [
+        " if ",
+        -1.927
+      ],
+      [
+        " els",
+        -1.8
+      ],
+      [
+        " else",
+        -1.799
+      ]
+    ]
+  }
+}

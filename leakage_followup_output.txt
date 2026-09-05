@@ -1,0 +1,138 @@
+Label Leakage Follow-up Experiment
+============================================================
+Loading dataset...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Samples: 8480
+Safe: 4461, Vuln: 4019
+
+============================================================
+Experiment: Baseline (original)
+Description: Raw code with all comments and docstrings intact
+============================================================
+
+  Accuracy: 0.8467
+  Vuln F1:  0.8420
+  FP Rate:  149/892.0 = 16.7%
+  Train:    0.47s
+
+  Top 5 VULN features:
+    +1.188  ' + '
+    +1.173  ' vu'
+    +1.173  ' vuln'
+    +1.173  ' vul'
+    +1.171  ' this '
+  Top 5 SAFE features:
+    -1.921  ' sa'
+    -1.672  'the'
+    -1.639  ' the'
+    -1.628  ' safe'
+    -1.628  ' saf'
+
+============================================================
+Experiment: Comments stripped
+Description: All comments, docstrings, and pure-text lines removed
+============================================================
+
+  Accuracy: 0.8255
+  Vuln F1:  0.8228
+  FP Rate:  179/892.0 = 20.1%
+  Train:    0.43s
+
+  Top 5 VULN features:
+    +1.346  ' eval('
+    +1.339  ' + '
+    +1.262  ' ev'
+    +1.207  ' eval'
+    +1.207  ' eva'
+  Top 5 SAFE features:
+    -1.740  ' ?:'
+    -1.740  '?: '
+    -1.740  ' ?: '
+    -1.720  ' if'
+    -1.709  ' sa'
+
+============================================================
+Experiment: Label words removed
+Description: Words like 'vulnerable', 'safe', 'injection' etc removed
+============================================================
+
+  Accuracy: 0.8390
+  Vuln F1:  0.8344
+  FP Rate:  157/892.0 = 17.6%
+  Train:    0.83s
+
+  Top 5 VULN features:
+    +1.249  ' this '
+    +1.207  ' + '
+    +1.196  ' eval('
+    +1.142  ' thi'
+    +1.133  ' this'
+  Top 5 SAFE features:
+    -1.689  'the'
+    -1.664  ' the'
+    -1.640  ' sa'
+    -1.630  'secu'
+    -1.630  'secur'
+
+============================================================
+Experiment: Comments stripped + label words removed
+Description: Both comment removal and label word removal
+============================================================
+
+  Accuracy: 0.8255
+  Vuln F1:  0.8223
+  FP Rate:  177/892.0 = 19.8%
+  Train:    0.98s
+
+  Top 5 VULN features:
+    +1.342  ' + '
+    +1.334  ' eval('
+    +1.247  ' ev'
+    +1.194  ' eval'
+    +1.194  ' eva'
+  Top 5 SAFE features:
+    -1.736  ' ?: '
+    -1.736  ' ?:'
+    -1.736  '?: '
+    -1.715  ' if'
+    -1.688  'se '
+
+============================================================
+Experiment: Full clean (comments + labels + identifiers)
+Description: Comments stripped, label words removed, identifiers normalized
+============================================================
+
+  Accuracy: 0.8107
+  Vuln F1:  0.8053
+  FP Rate:  181/892.0 = 20.3%
+  Train:    0.59s
+
+  Top 5 VULN features:
+    +1.639  ' + '
+    +1.262  ' eval('
+    +1.153  ' eval'
+    +1.153  ' eva'
+    +1.140  ' ev'
+  Top 5 SAFE features:
+    -2.003  ' if'
+    -1.954  'if '
+    -1.927  ' if '
+    -1.800  ' els'
+    -1.799  ' else'
+
+============================================================
+SUMMARY: How Much Was Label Leakage?
+============================================================
+
+  Condition                                     Accuracy     Drop  Vuln F1
+  ---------------------------------------------------------------------
+  Baseline (original)                             0.8467  +0.0000   0.8420
+  Comments stripped                               0.8255  +0.0212   0.8228
+  Label words removed                             0.8390  +0.0077   0.8344
+  Comments stripped + label words removed         0.8255  +0.0212   0.8223
+  Full clean (comments + labels + identifiers)    0.8107  +0.0360   0.8053
+
+  Total accuracy attributable to label leakage: 3.6 percentage points
+  True model capability (code patterns only): 81.1%
+
+Results saved to leakage_followup_results.json
