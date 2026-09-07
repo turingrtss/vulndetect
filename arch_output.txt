@@ -1,0 +1,154 @@
+============================================================
+Neural Architecture Comparison
+Hardware: ARM64, 12GB RAM, 2 CPU cores, no GPU
+PyTorch: 2.14.0+cpu
+Dataset: MNIST (28x28, 10 classes)
+Budget: Same epochs (15), same optimizer (Adam 1e-3)
+============================================================
+/home/ubuntu/projects/vulndetect/arch_comparison.py:50: UserWarning: The given NumPy array is not writable, and PyTorch does not support non-writable tensors. This means writing to this tensor will result in undefined behavior. You may want to copy the array to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/utils/tensor_numpy.cpp:213.)
+  return torch.FloatTensor(data) / 255.0
+
+Train: torch.Size([20000, 28, 28]) (subset of 60000), Test: torch.Size([10000, 28, 28])
+
+==================================================
+  MLP
+  Parameters: 55,050
+==================================================
+  Epoch   1: loss=1.7106  train_acc=0.6029
+  Epoch   5: loss=0.2835  train_acc=0.9194
+  Epoch  10: loss=0.1872  train_acc=0.9456
+  Epoch  15: loss=0.1417  train_acc=0.9587
+
+  Test Accuracy:  0.9471
+  Train Time:     17.9s
+  Inference:      0.0095 ms/sample
+  Memory:         596 MB
+
+==================================================
+  CNN (LeNet)
+  Parameters: 54,314
+==================================================
+  Epoch   1: loss=1.6272  train_acc=0.5759
+  Epoch   5: loss=0.2180  train_acc=0.9340
+  Epoch  10: loss=0.1135  train_acc=0.9659
+  Epoch  15: loss=0.0752  train_acc=0.9769
+
+  Test Accuracy:  0.9718
+  Train Time:     676.1s
+  Inference:      0.2398 ms/sample
+  Memory:         610 MB
+
+==================================================
+  Vanilla RNN
+  Parameters: 6,666
+==================================================
+  Epoch   1: loss=2.0370  train_acc=0.2614
+  Epoch   5: loss=1.1613  train_acc=0.5949
+  Epoch  10: loss=0.8944  train_acc=0.6878
+  Epoch  15: loss=0.7106  train_acc=0.7571
+
+  Test Accuracy:  0.7617
+  Train Time:     150.6s
+  Inference:       Epoch  20: loss=0.1370  train_acc=0.9611
+
+  Test Accuracy:  0.9595
+  Train Time:     916.3s
+  Inference:      0.2140 ms/sample
+  Memory:         541 MB
+
+==================================================
+  LSTM
+  Pa  Epoch   5: loss=0.6610  train_acc=0.7999
+  Epoch  10: loss=0.2745  train_acc=0.9252
+  Epoch  15: loss=0.1893   Epoch   5: loss=0.1704  train_acc=0.9502
+  Epoch  10: loss=0.0984  train_acc=0.9711
+  Epoch  15: loss=0.0726  train_acc=0.9779
+  Epoch  20: loss=0.0563  train_acc=0.9830
+
+  Test Accuracy:  0.9788
+  Train Time:     1021.3s
+  Inference:      0.4759 ms/sample
+  Memory:         536 MB
+
+==================================================
+  GRU
+  Parameters: 15,018
+==================================================
+  Epoch   1: loss=1.3409  train_acc=0.5348
+  Train Time:     146.6s
+  Inference:      0.1926 ms/sample
+  Memory:         616 MB
+
+==================================================
+  Transformer
+  Parameters: 19,242
+==================================================
+  Epoch   1: loss=2.1118  train_acc=0.2521
+  Epoch   5: loss=0.4917  train_acc=0.8633
+  Epoch  10: loss=0.1978  train_acc=0.9412
+  Epoch  15: loss=0.1319  train_acc=0.9607
+
+  Test Accuracy:  0.9628
+  Train Time:     516.2s
+  Inference:      0.2200 ms/sample
+  Memory:         614 MB
+
+==================================================
+  State Space (S4-style)
+  Parameters: 3,626
+==================================================
+  Epoch   1: loss=2.1843  train_acc=0.2390
+  Epoch   5: loss=1.6862  train_acc=0.4375
+  Epoch  10: loss=1.1940  train_acc=0.6119
+  Epoch  15: loss=0.8361  train_acc=0.7328
+
+  Test Accuracy:  0.7396
+  Train Time:     214.8s
+  Inference:      0.1989 ms/sample
+  Memory:         614 MB
+
+==================================================
+  KAN
+  Parameters: 127,082
+==================================================
+  Epoch   1: loss=2.1441  train_acc=0.3419
+  Epoch   5: loss=0.9782  train_acc=0.7916
+  Epoch  10: loss=0.5714  train_acc=0.8572
+  Epoch  15: loss=0.4461  train_acc=0.8811
+
+  Test Accuracy:  0.8765
+  Train Time:     32.1s
+  Inference:      0.0572 ms/sample
+  Memory:         633 MB
+
+==================================================
+  Mixture of Experts
+  Parameters: 77,910
+==================================================
+  Epoch   1: loss=1.5384  train_acc=0.6682
+  Epoch   5: loss=0.2909  train_acc=0.9171
+  Epoch  10: loss=0.1959  train_acc=0.9421
+  Epoch  15: loss=0.1520  train_acc=0.9555
+
+  Test Accuracy:  0.9430
+  Train Time:     23.0s
+  Inference:      0.0146 ms/sample
+  Memory:         620 MB
+
+============================================================
+SUMMARY
+============================================================
+
+Architecture                Params   Test Acc   Train(s)  Infer(ms)
+---------------------------------------------------------------
+CNN (LeNet)                 54,314     0.9718      676.1     0.2398
+Transformer                 19,242     0.9628      516.2     0.2200
+MLP                         55,050     0.9471       17.9     0.0095
+Mixture of Experts          77,910     0.9430       23.0     0.0146
+LSTM                        15,466     0.9383      199.5     0.2841
+GRU                         15,018     0.9343      146.6     0.1926
+KAN                        127,082     0.8765       32.1     0.0572
+Vanilla RNN                  6,666     0.7617      150.6     0.1400
+State Space (S4-style)       3,626     0.7396      214.8     0.1989
+
+Results saved to arch_comparison_results.json
