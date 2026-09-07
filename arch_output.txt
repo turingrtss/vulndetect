@@ -75,65 +75,75 @@ Train: torch.Size([20000, 28, 28]) (subset of 60000), Test: torch.Size([10000, 2
   Parameters: 15,018
 ==================================================
   Epoch   1: loss=1.3409  train_acc=0.5348
-  Train Time:     146.6s
-  Inference:      0.1926 ms/sample
-  Memory:         616 MB
+  Epoch   5: loss=0.1655  train_acc=0.9520
+  Epoch  10: loss=0.0896  train_acc=0.9745
+  Epoch  15: loss=0.0634  train_acc=0.9818
+  Epoch  20: loss=0.0489  train_acc=0.9854
+
+  Test Accuracy:  0.9805
+  Train Time:     584.7s
+  Inference:      0.3327 ms/sample
+  Memory:         537 MB
 
 ==================================================
   Transformer
   Parameters: 19,242
 ==================================================
-  Epoch   1: loss=2.1118  train_acc=0.2521
-  Epoch   5: loss=0.4917  train_acc=0.8633
-  Epoch  10: loss=0.1978  train_acc=0.9412
-  Epoch  15: loss=0.1319  train_acc=0.9607
+  Epoch   1: loss=1.1177  train_acc=0.6381
+  Epoch   5: loss=0.1159  train_acc=0.9639
+  Epoch  10: loss=0.0728  train_acc=0.9772
+  Epoch  15: loss=0.0554  train_acc=0.9822
+  Epoch  20: loss=0.0462  train_acc=0.9846
 
-  Test Accuracy:  0.9628
-  Train Time:     516.2s
-  Inference:      0.2200 ms/sample
-  Memory:         614 MB
+  Test Accuracy:  0.9835
+  Train Time:     2189.5s
+  Inference:      0.2645 ms/sample
+  Memory:         550 MB
 
 ==================================================
   State Space (S4-style)
   Parameters: 3,626
 ==================================================
-  Epoch   1: loss=2.1843  train_acc=0.2390
-  Epoch   5: loss=1.6862  train_acc=0.4375
-  Epoch  10: loss=1.1940  train_acc=0.6119
-  Epoch  15: loss=0.8361  train_acc=0.7328
+  Epoch   1: loss=1.8329  train_acc=0.3793
+  Epoch   5: loss=0.8690  train_acc=0.7298
+  Epoch  10: loss=0.5061  train_acc=0.8483
+  Epoch  15: loss=0.3840  train_acc=0.8851
+  Epoch  20: loss=0.3147  train_acc=0.9069
 
-  Test Accuracy:  0.7396
-  Train Time:     214.8s
-  Inference:      0.1989 ms/sample
-  Memory:         614 MB
+  Test Accuracy:  0.9062
+  Train Time:     825.2s
+  Inference:      0.3426 ms/sample
+  Memory:         543 MB
 
 ==================================================
   KAN
   Parameters: 127,082
 ==================================================
-  Epoch   1: loss=2.1441  train_acc=0.3419
-  Epoch   5: loss=0.9782  train_acc=0.7916
-  Epoch  10: loss=0.5714  train_acc=0.8572
-  Epoch  15: loss=0.4461  train_acc=0.8811
+  Epoch   1: loss=1.5325  train_acc=0.6314
+  Epoch   5: loss=0.3831  train_acc=0.8953
+  Epoch  10: loss=0.3018  train_acc=0.9112
+  Epoch  15: loss=0.2754  train_acc=0.9176
+  Epoch  20: loss=0.2487  train_acc=0.9260
 
-  Test Accuracy:  0.8765
-  Train Time:     32.1s
-  Inference:      0.0572 ms/sample
-  Memory:         633 MB
+  Test Accuracy:  0.9249
+  Train Time:     156.9s
+  Inference:      0.0577 ms/sample
+  Memory:         547 MB
 
 ==================================================
   Mixture of Experts
   Parameters: 77,910
 ==================================================
-  Epoch   1: loss=1.5384  train_acc=0.6682
-  Epoch   5: loss=0.2909  train_acc=0.9171
-  Epoch  10: loss=0.1959  train_acc=0.9421
-  Epoch  15: loss=0.1520  train_acc=0.9555
+  Epoch   1: loss=0.6011  train_acc=0.8540
+  Epoch   5: loss=0.1471  train_acc=0.9586
+  Epoch  10: loss=0.0907  train_acc=0.9739
+  Epoch  15: loss=0.0615  train_acc=0.9829
+  Epoch  20: loss=0.0431  train_acc=0.9881
 
-  Test Accuracy:  0.9430
-  Train Time:     23.0s
-  Inference:      0.0146 ms/sample
-  Memory:         620 MB
+  Test Accuracy:  0.9722
+  Train Time:     142.6s
+  Inference:      0.0213 ms/sample
+  Memory:         548 MB
 
 ============================================================
 SUMMARY
@@ -141,14 +151,14 @@ SUMMARY
 
 Architecture                Params   Test Acc   Train(s)  Infer(ms)
 ---------------------------------------------------------------
-CNN (LeNet)                 54,314     0.9718      676.1     0.2398
-Transformer                 19,242     0.9628      516.2     0.2200
-MLP                         55,050     0.9471       17.9     0.0095
-Mixture of Experts          77,910     0.9430       23.0     0.0146
-LSTM                        15,466     0.9383      199.5     0.2841
-GRU                         15,018     0.9343      146.6     0.1926
-KAN                        127,082     0.8765       32.1     0.0572
-Vanilla RNN                  6,666     0.7617      150.6     0.1400
-State Space (S4-style)       3,626     0.7396      214.8     0.1989
+CNN (LeNet)                 54,314     0.9891      622.1     0.1077
+Transformer                 19,242     0.9835     2189.5     0.2645
+GRU                         15,018     0.9805      584.7     0.3327
+LSTM                        15,466     0.9788     1021.3     0.4759
+MLP                         55,050     0.9745       28.5     0.0043
+Mixture of Experts          77,910     0.9722      142.6     0.0213
+Vanilla RNN                  6,666     0.9595      916.3     0.2140
+KAN                        127,082     0.9249      156.9     0.0577
+State Space (S4-style)       3,626     0.9062      825.2     0.3426
 
 Results saved to arch_comparison_results.json

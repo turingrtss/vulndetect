@@ -1,0 +1,138 @@
+============================================================
+Spiking Neural Networks on CPU
+Hardware: ARM64, 12GB RAM, 2 CPU cores, no GPU
+PyTorch: 2.14.0+cpu
+============================================================
+
+Train: torch.Size([20000, 28, 28]), Test: torch.Size([10000, 28, 28])
+
+==================================================
+  SNN-FC (T=10)
+  Parameters: 101,770
+  Timesteps: 10
+==================================================
+  Epoch   1: loss=1.9305  acc=0.6781
+  Epoch   5: loss=1.5575  acc=0.9176
+  Epoch  10: loss=1.5269  acc=0.9400
+  Epoch  15: loss=1.5143  acc=0.9514
+
+  Test Accuracy:  0.9419
+  Train Time:     202.0s
+  Inference:      0.3027 ms/sample
+  Avg Spikes:     408.9 per sample
+
+==================================================
+  SNN-FC (T=25)
+  Parameters: 101,770
+  Timesteps: 25
+==================================================
+  Epoch   1: loss=1.9227  acc=0.7327
+  Epoch   5: loss=1.5527  acc=0.9251
+  Epoch  10: loss=1.5226  acc=0.9471
+  Epoch  15: loss=1.5097  acc=0.9569
+
+  Test Accuracy:  0.9461
+  Train Time:     482.9s
+  Inference:      0.7498 ms/sample
+  Avg Spikes:     991.4 per sample
+
+==================================================
+  SNN-FC (T=50)
+  Parameters: 101,770
+  Timesteps: 50
+==================================================
+  Epoch   1: loss=1.8967  acc=0.7378
+  Epoch   5: loss=1.5496  acc=0.9280
+  Epoch  10: loss=1.5202  acc=0.9505
+  Epoch  15: loss=1.5073  acc=0.9601
+
+  Test Accuracy:  0.9488
+  Train Time:     898.0s
+  Inference:      1.6284 ms/sample
+  Avg Spikes:     1980.4 per sample
+
+==================================================
+  SNN-Conv (T=10)
+  Parameters: 11,274
+  Timesteps: 10
+==================================================
+  Epoch   1: loss=1.9299  acc=0.6587
+  Epoch   5: loss=1.5400  acc=0.9497
+  Epoch  10: loss=1.5114  acc=0.9649
+  Epoch  15: loss=1.5018  acc=0.9720
+
+  Test Accuracy:  0.9693
+  Train Time:     3227.2s
+  Inference:      1.5689 ms/sample
+  Avg Spikes:     9596.1 per sample
+
+==================================================
+  SNN-Conv (T=25)
+  Parameters: 11,274
+  Timesteps: 25
+==================================================
+  Epoch   1: loss=1.9057  acc=0.6655
+  Epoch   5: loss=1.5379  acc=0.9496
+  Epoch  10: loss=1.5085  acc=0.9679
+  Epoch  15: loss=1.4990  acc=0.9739
+
+  Test Accuracy:  0.9741
+  Train Time:     4663.4s
+  Inference:      3.7665 ms/sample
+  Avg Spikes:     26707.3 per sample
+
+==================================================
+  MLP (conventional)
+  Parameters: 55,050
+==================================================
+  Epoch   1: loss=1.1379  acc=0.7070
+  Epoch   5: loss=0.2314  acc=0.9343
+  Epoch  10: loss=0.1477  acc=0.9565
+  Epoch  15: loss=0.1021  acc=0.9704
+
+  Test Accuracy:  0.9520
+  Train Time:     6.6s
+  Inference:      0.0043 ms/sample
+
+==================================================
+  CNN (conventional)
+  Parameters: 54,314
+==================================================
+  Epoch   1: loss=1.0711  acc=0.7060
+  Epoch   5: loss=0.1340  acc=0.9608
+  Epoch  10: loss=0.0715  acc=0.9789
+  Epoch  15: loss=0.0476  acc=0.9858
+
+  Test Accuracy:  0.9776
+  Train Time:     153.5s
+  Inference:      0.1041 ms/sample
+
+==================================================
+  Transformer (conventional)
+  Parameters: 19,242
+==================================================
+  Epoch   1: loss=1.8453  acc=0.3867
+  Epoch   5: loss=0.2715  acc=0.9204
+  Epoch  10: loss=0.1508  acc=0.9560
+  Epoch  15: loss=0.1046  acc=0.9689
+
+  Test Accuracy:  0.9699
+  Train Time:     159.1s
+  Inference:      0.1195 ms/sample
+
+============================================================
+SUMMARY: Spiking vs Conventional
+============================================================
+
+Architecture                     Params      Acc  Train(s)  Infer(ms)   Spikes
+-------------------------------------------------------------------------
+CNN (conventional)               54,314   0.9776     153.5     0.1041        -
+SNN-Conv (T=25)                  11,274   0.9741    4663.4     3.7665    26707
+Transformer (conventional)       19,242   0.9699     159.1     0.1195        -
+SNN-Conv (T=10)                  11,274   0.9693    3227.2     1.5689     9596
+MLP (conventional)               55,050   0.9520       6.6     0.0043        -
+SNN-FC (T=50)                   101,770   0.9488     898.0     1.6284     1980
+SNN-FC (T=25)                   101,770   0.9461     482.9     0.7498      991
+SNN-FC (T=10)                   101,770   0.9419     202.0     0.3027      409
+
+Results saved to snn_results.json
