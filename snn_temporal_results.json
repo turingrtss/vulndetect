@@ -1,0 +1,44 @@
+{
+  "seq_snn": {
+    "name": "SNN (row-seq)",
+    "params": 2506,
+    "test_acc": 0.4285,
+    "train_time_s": 45.1,
+    "infer_ms": 0.1456
+  },
+  "seq_lstm": {
+    "name": "LSTM (row-seq)",
+    "params": 24714,
+    "test_acc": 0.9295,
+    "train_time_s": 58.6,
+    "infer_ms": 0.1456
+  },
+  "seq_cnn": {
+    "name": "CNN-1D (row-seq)",
+    "params": 11498,
+    "test_acc": 0.9315,
+    "train_time_s": 17.2,
+    "infer_ms": 0.0156
+  },
+  "temp_snn": {
+    "name": "SNN (temporal)",
+    "params": 453,
+    "test_acc": 0.6,
+    "train_time_s": 122.8,
+    "infer_ms": 0.3971
+  },
+  "temp_lstm": {
+    "name": "LSTM (temporal)",
+    "params": 17477,
+    "test_acc": 0.5175,
+    "train_time_s": 162.5,
+    "infer_ms": 0.8893
+  },
+  "temp_cnn": {
+    "name": "CNN-1D (temporal)",
+    "params": 4005,
+    "test_acc": 0.9975,
+    "train_time_s": 9.1,
+    "infer_ms": 0.0225
+  }
+}

@@ -1,0 +1,91 @@
+============================================================
+Where SNNs Beat CNNs — Temporal Task Comparison
+Hardware: ARM64, 12GB RAM, 2 CPU cores, no GPU
+============================================================
+
+
+############################################################
+TASK 1: Sequential MNIST (784 timesteps, 1 pixel/step)
+############################################################
+  (Using row-by-row: 28 timesteps of 28 pixels for feasibility)
+
+==================================================
+  SNN (row-seq)
+  Parameters: 2,506
+==================================================
+  Epoch 1: acc=0.1991
+  Epoch 5: acc=0.3869
+  Epoch 10: acc=0.4371
+  Epoch 15: acc=0.4791
+  Test Acc: 0.4285 | Train: 45.1s | Infer: 0.1456ms
+
+==================================================
+  LSTM (row-seq)
+  Parameters: 24,714
+==================================================
+  Epoch 1: acc=0.2903
+  Epoch 5: acc=0.8956
+  Epoch 10: acc=0.9430
+  Epoch 15: acc=0.9628
+  Test Acc: 0.9295 | Train: 58.6s | Infer: 0.1456ms
+
+==================================================
+  CNN-1D (row-seq)
+  Parameters: 11,498
+==================================================
+  Epoch 1: acc=0.5650
+  Epoch 5: acc=0.9070
+  Epoch 10: acc=0.9370
+  Epoch 15: acc=0.9535
+  Test Acc: 0.9315 | Train: 17.2s | Infer: 0.0156ms
+
+
+############################################################
+TASK 2: Temporal Spike Pattern Classification
+############################################################
+
+==================================================
+  SNN (temporal)
+  Parameters: 453
+==================================================
+  Epoch 1: acc=0.2905
+  Epoch 5: acc=0.5580
+  Epoch 10: acc=0.5903
+  Epoch 15: acc=0.6003
+  Test Acc: 0.6000 | Train: 122.8s | Infer: 0.3971ms
+
+==================================================
+  LSTM (temporal)
+  Parameters: 17,477
+==================================================
+  Epoch 1: acc=0.2280
+  Epoch 5: acc=0.4380
+  Epoch 10: acc=0.3805
+  Epoch 15: acc=0.4687
+  Test Acc: 0.5175 | Train: 162.5s | Infer: 0.8893ms
+
+==================================================
+  CNN-1D (temporal)
+  Parameters: 4,005
+==================================================
+  Epoch 1: acc=0.4925
+  Epoch 5: acc=0.9827
+  Epoch 10: acc=0.9938
+  Epoch 15: acc=0.9943
+  Test Acc: 0.9975 | Train: 9.1s | Infer: 0.0225ms
+
+============================================================
+SUMMARY: Where Do SNNs Win?
+============================================================
+
+Task         Architecture           Params      Acc  Train(s)  Infer(ms)
+-------------------------------------------------------------------
+SeqMNIST     CNN-1D (row-seq)       11,498   0.9315      17.2     0.0156
+SeqMNIST     LSTM (row-seq)         24,714   0.9295      58.6     0.1456
+SeqMNIST     SNN (row-seq)           2,506   0.4285      45.1     0.1456
+
+Temporal     CNN-1D (temporal)       4,005   0.9975       9.1     0.0225
+Temporal     SNN (temporal)            453   0.6000     122.8     0.3971
+Temporal     LSTM (temporal)        17,477   0.5175     162.5     0.8893
+
+Results saved to snn_temporal_results.json
