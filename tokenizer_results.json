@@ -4,17 +4,45 @@
     "vocab_size": 83,
     "config": "vocab=83, max_len=500, granularity=character",
     "params": 14148,
-    "test_acc": 0.5667,
+    "test_acc": 0.567,
+    "test_acc_std": 0.0051,
+    "per_seed": [
+      {
+        "seed": 0,
+        "test_acc": 0.5667,
+        "train_time_s": 20.8
+      },
+      {
+        "seed": 1,
+        "test_acc": 0.56,
+        "train_time_s": 20.0
+      },
+      {
+        "seed": 2,
+        "test_acc": 0.5677,
+        "train_time_s": 20.2
+      },
+      {
+        "seed": 3,
+        "test_acc": 0.565,
+        "train_time_s": 20.1
+      },
+      {
+        "seed": 4,
+        "test_acc": 0.5757,
+        "train_time_s": 20.1
+      }
+    ],
     "per_class": {
-      "World": 0.5734,
-      "Sports": 0.6231,
-      "Business": 0.5237,
-      "Sci/Tech": 0.5478
+      "World": 0.6005,
+      "Sports": 0.6608,
+      "Business": 0.4631,
+      "Sci/Tech": 0.5806
     },
-    "train_time_s": 22.0,
-    "fit_time_s": 0.3,
-    "encode_time_s": 1.6,
-    "infer_ms": 0.0477,
+    "train_time_s": 20.3,
+    "fit_time_s": 0.2,
+    "encode_time_s": 1.4,
+    "infer_ms": 0.0,
     "avg_seq_len": 235
   },
   "Word": {
@@ -22,17 +50,45 @@
     "vocab_size": 10000,
     "config": "vocab=10000, max_len=100, granularity=word",
     "params": 648836,
-    "test_acc": 0.8667,
+    "test_acc": 0.8601,
+    "test_acc_std": 0.0072,
+    "per_seed": [
+      {
+        "seed": 0,
+        "test_acc": 0.8487,
+        "train_time_s": 8.3
+      },
+      {
+        "seed": 1,
+        "test_acc": 0.8613,
+        "train_time_s": 8.0
+      },
+      {
+        "seed": 2,
+        "test_acc": 0.8713,
+        "train_time_s": 8.1
+      },
+      {
+        "seed": 3,
+        "test_acc": 0.8583,
+        "train_time_s": 8.1
+      },
+      {
+        "seed": 4,
+        "test_acc": 0.861,
+        "train_time_s": 8.3
+      }
+    ],
     "per_class": {
-      "World": 0.8587,
+      "World": 0.8478,
       "Sports": 0.9314,
-      "Business": 0.8232,
-      "Sci/Tech": 0.8545
+      "Business": 0.8193,
+      "Sci/Tech": 0.8467
     },
-    "train_time_s": 9.2,
+    "train_time_s": 8.2,
     "fit_time_s": 0.3,
-    "encode_time_s": 0.6,
-    "infer_ms": 0.0104,
+    "encode_time_s": 0.5,
+    "infer_ms": 0.0,
     "avg_seq_len": 39
   },
   "BPE": {
@@ -40,17 +96,45 @@
     "vocab_size": 2040,
     "config": "vocab=2040, max_len=200, merges=2000, granularity=subword",
     "params": 139396,
-    "test_acc": 0.7817,
+    "test_acc": 0.7846,
+    "test_acc_std": 0.0052,
+    "per_seed": [
+      {
+        "seed": 0,
+        "test_acc": 0.7903,
+        "train_time_s": 10.4
+      },
+      {
+        "seed": 1,
+        "test_acc": 0.7803,
+        "train_time_s": 10.5
+      },
+      {
+        "seed": 2,
+        "test_acc": 0.7767,
+        "train_time_s": 10.2
+      },
+      {
+        "seed": 3,
+        "test_acc": 0.7887,
+        "train_time_s": 10.4
+      },
+      {
+        "seed": 4,
+        "test_acc": 0.787,
+        "train_time_s": 10.3
+      }
+    ],
     "per_class": {
-      "World": 0.7772,
-      "Sports": 0.8856,
-      "Business": 0.7243,
-      "Sci/Tech": 0.7418
+      "World": 0.7826,
+      "Sports": 0.9017,
+      "Business": 0.7507,
+      "Sci/Tech": 0.7156
     },
-    "train_time_s": 12.5,
-    "fit_time_s": 110.4,
-    "encode_time_s": 404.3,
-    "infer_ms": 0.0199,
+    "train_time_s": 10.4,
+    "fit_time_s": 105.9,
+    "encode_time_s": 392.7,
+    "infer_ms": 0.0,
     "avg_seq_len": 102
   },
   "Char N-gram": {
@@ -58,17 +142,45 @@
     "vocab_size": 10000,
     "config": "vocab=10000, max_len=300, n=3, granularity=char-3gram",
     "params": 648836,
-    "test_acc": 0.8483,
+    "test_acc": 0.8553,
+    "test_acc_std": 0.005,
+    "per_seed": [
+      {
+        "seed": 0,
+        "test_acc": 0.853,
+        "train_time_s": 16.8
+      },
+      {
+        "seed": 1,
+        "test_acc": 0.853,
+        "train_time_s": 16.7
+      },
+      {
+        "seed": 2,
+        "test_acc": 0.849,
+        "train_time_s": 17.0
+      },
+      {
+        "seed": 3,
+        "test_acc": 0.8633,
+        "train_time_s": 16.9
+      },
+      {
+        "seed": 4,
+        "test_acc": 0.8583,
+        "train_time_s": 17.3
+      }
+    ],
     "per_class": {
-      "World": 0.8573,
-      "Sports": 0.926,
-      "Business": 0.8008,
-      "Sci/Tech": 0.8113
+      "World": 0.8587,
+      "Sports": 0.9327,
+      "Business": 0.8127,
+      "Sci/Tech": 0.8309
     },
-    "train_time_s": 19.6,
+    "train_time_s": 16.9,
     "fit_time_s": 1.2,
     "encode_time_s": 1.7,
-    "infer_ms": 0.03,
+    "infer_ms": 0.0,
     "avg_seq_len": 227
   }
 }

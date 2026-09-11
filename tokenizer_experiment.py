@@ -287,7 +287,13 @@ class TextClassifier(nn.Module):
 # ==================== TRAINING ====================
 
 def train_and_evaluate(tokenizer, train_texts, train_labels, test_texts, test_labels,
-                       embed_dim=64, hidden=128, epochs=15, batch_size=256, lr=1e-3):
+                       embed_dim=64, hidden=128, epochs=15, batch_size=256, lr=1e-3,
+                       seeds=(0, 1, 2, 3, 4)):
+    """Fit/encode the tokenizer ONCE (deterministic, no randomness), then
+    train+evaluate the model across multiple seeds and report mean ± std.
+    Single-seed runs can't distinguish a real tokenizer effect from
+    run-to-run variance (raised by a dev.to commenter, raknaos, 2026-09-11).
+    """
     print(f"\n{'='*60}")
     print(f"  Tokenizer: {tokenizer.name}")
     print(f"  {tokenizer.describe()}")
@@ -313,63 +319,76 @@ def train_and_evaluate(tokenizer, train_texts, train_labels, test_texts, test_la
     train_lengths = (X_train != 0).sum(dim=1).float()
     print(f"  Avg sequence length: {train_lengths.mean():.0f} tokens")
     print(f"  Max sequence length: {train_lengths.max():.0f} tokens")
-    
-    # Model
-    model = TextClassifier(tokenizer.vocab_size, embed_dim, hidden, 4)
-    params = sum(p.numel() for p in model.parameters())
-    print(f"  Model params: {params:,}")
-    
-    loader = DataLoader(TensorDataset(X_train, y_train), batch_size=batch_size, shuffle=True)
-    optimizer = optim.Adam(model.parameters(), lr=lr)
-    criterion = nn.CrossEntropyLoss()
-    
-    # Train
-    start = time.time()
+
+    seed_accs = []
+    seed_train_times = []
+    per_seed_results = []
+    model = None
+    params = 0
     train_accs = []
-    for epoch in range(epochs):
-        model.train()
-        correct = total = 0
-        for bx, by in loader:
-            optimizer.zero_grad()
-            out = model(bx)
-            loss = criterion(out, by)
-            loss.backward()
-            optimizer.step()
-            correct += (out.argmax(1) == by).sum().item()
-            total += bx.size(0)
-        acc = correct / total
-        train_accs.append(acc)
-        if (epoch + 1) % 5 == 0 or epoch == 0:
-            print(f"  Epoch {epoch+1:3d}: train_acc={acc:.4f}")
-    train_time = time.time() - start
-    
-    # Evaluate
+
+    for seed in seeds:
+        torch.manual_seed(seed)
+        np.random.seed(seed)
+
+        model = TextClassifier(tokenizer.vocab_size, embed_dim, hidden, 4)
+        params = sum(p.numel() for p in model.parameters())
+
+        loader = DataLoader(TensorDataset(X_train, y_train), batch_size=batch_size, shuffle=True)
+        optimizer = optim.Adam(model.parameters(), lr=lr)
+        criterion = nn.CrossEntropyLoss()
+
+        start = time.time()
+        train_accs = []
+        for epoch in range(epochs):
+            model.train()
+            correct = total = 0
+            for bx, by in loader:
+                optimizer.zero_grad()
+                out = model(bx)
+                loss = criterion(out, by)
+                loss.backward()
+                optimizer.step()
+                correct += (out.argmax(1) == by).sum().item()
+                total += bx.size(0)
+            acc = correct / total
+            train_accs.append(acc)
+        train_time = time.time() - start
+
+        model.eval()
+        with torch.no_grad():
+            preds = []
+            for i in range(0, len(X_test), batch_size):
+                preds.append(model(X_test[i:i+batch_size]).argmax(1))
+            y_pred = torch.cat(preds)
+
+        test_acc = (y_pred == y_test).float().mean().item()
+        seed_accs.append(test_acc)
+        seed_train_times.append(train_time)
+        per_seed_results.append({'seed': seed, 'test_acc': round(test_acc, 4), 'train_time_s': round(train_time, 1)})
+        print(f"  Seed {seed}: test_acc={test_acc:.4f}  train_time={train_time:.1f}s")
+
+    mean_acc = float(np.mean(seed_accs))
+    std_acc = float(np.std(seed_accs))
+    infer_time = 0.0
+
+    # Keep last-seed model's per-class breakdown + convergence curve for
+    # reference (not meaningfully different across seeds at this scale)
     model.eval()
-    t0 = time.time()
     with torch.no_grad():
         preds = []
         for i in range(0, len(X_test), batch_size):
             preds.append(model(X_test[i:i+batch_size]).argmax(1))
         y_pred = torch.cat(preds)
-    infer_time = time.time() - t0
-    
-    test_acc = (y_pred == y_test).float().mean().item()
-    
-    # Per-class accuracy
     class_names = ['World', 'Sports', 'Business', 'Sci/Tech']
     per_class = {}
     for c in range(4):
         mask = y_test == c
         if mask.sum() > 0:
             per_class[class_names[c]] = round((y_pred[mask] == y_test[mask]).float().mean().item(), 4)
-    
-    # Analyze what the model learned — top embedding similarities
-    # Find which tokens have the most distinctive embeddings per class
-    
-    print(f"\n  Test Accuracy: {test_acc:.4f}")
-    print(f"  Per-class: {per_class}")
-    print(f"  Train time: {train_time:.1f}s")
-    print(f"  Inference: {infer_time/len(test_texts)*1000:.4f} ms/sample")
+
+    print(f"\n  Test Accuracy: {mean_acc:.4f} ± {std_acc:.4f}  (n={len(seeds)} seeds)")
+    print(f"  Per-class (last seed): {per_class}")
     print(f"  Tokenizer overhead: fit={fit_time:.1f}s, encode={encode_time:.1f}s")
     
     return {
@@ -377,9 +396,11 @@ def train_and_evaluate(tokenizer, train_texts, train_labels, test_texts, test_la
         'vocab_size': tokenizer.vocab_size,
         'config': tokenizer.describe(),
         'params': params,
-        'test_acc': round(test_acc, 4),
+        'test_acc': round(mean_acc, 4),
+        'test_acc_std': round(std_acc, 4),
+        'per_seed': per_seed_results,
         'per_class': per_class,
-        'train_time_s': round(train_time, 1),
+        'train_time_s': round(float(np.mean(seed_train_times)), 1),
         'fit_time_s': round(fit_time, 1),
         'encode_time_s': round(encode_time, 1),
         'infer_ms': round(infer_time / len(test_texts) * 1000, 4),
