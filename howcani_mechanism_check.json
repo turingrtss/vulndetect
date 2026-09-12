@@ -1,0 +1,46 @@
+{
+  "q1_comment_length_by_label": {
+    "safe_mean_comment_len": 49.82515131136517,
+    "safe_median_comment_len": 13.0,
+    "vuln_mean_comment_len": 26.62776810151779,
+    "vuln_median_comment_len": 0.0
+  },
+  "q3_comment_fraction": {
+    "median_comment_fraction": 0.0011744017653954899,
+    "mean_comment_fraction": 0.07354660027271662
+  },
+  "q2_marker_stats_by_arm": {
+    "baseline": {
+      "arm": "baseline",
+      "n_docs": 1696,
+      "df_count": 107,
+      "df_fraction": 0.0631,
+      "mean_tfidf_nonzero_docs": 0.0368,
+      "mean_tfidf_all_docs": 0.0023
+    },
+    "stripped": {
+      "arm": "stripped",
+      "n_docs": 1696,
+      "df_count": 0,
+      "df_fraction": 0.0,
+      "mean_tfidf_nonzero_docs": 0.0,
+      "mean_tfidf_all_docs": 0.0
+    },
+    "filler": {
+      "arm": "filler",
+      "n_docs": 1696,
+      "df_count": 1696,
+      "df_fraction": 1.0,
+      "mean_tfidf_nonzero_docs": 0.0307,
+      "mean_tfidf_all_docs": 0.0307
+    },
+    "shuffled": {
+      "arm": "shuffled",
+      "n_docs": 1696,
+      "df_count": 248,
+      "df_fraction": 0.1462,
+      "mean_tfidf_nonzero_docs": 0.0362,
+      "mean_tfidf_all_docs": 0.0053
+    }
+  }
+}
