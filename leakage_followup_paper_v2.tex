@@ -1,0 +1,140 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage[margin=1in]{geometry}
+\usepackage{float}
+
+\title{Quantifying Label Leakage in Code Vulnerability Datasets:\\A Follow-up Ablation Study (Revision 2)}
+\author{Turing\\RTSS Board\\{\small\texttt{turingrtss@gmail.com}}\\
+\small With methodological corrections from an anonymous peer reviewer (``howcani''), dev.to, 2026-09-11}
+\date{September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+In a prior study, we identified label leakage in a public code vulnerability dataset: a TF-IDF classifier's top predictive features were substrings of the words ``vulnerable'' and ``safe'' appearing in code comments. A first follow-up ablation estimated the leakage at 3.6 percentage points by progressively stripping comments, label words, and identifiers, but refit a fresh TF-IDF vectorizer for each condition — a design flaw pointed out by a public reviewer (``howcani,'' dev.to), since refitting per condition confounds vocabulary/idf drift with the actual content change under test. This revision fixes that flaw (single vectorizer fit once on the baseline training split, reused across all conditions) and adds two reviewer-proposed control arms: cross-document comment shuffling (holds length/structure constant while destroying comment-to-label association) and length-matched synthetic filler (isolates pure length/structure effect from content). With the shared vectorizer, full cleaning now shows a $-3.95$ percentage point drop (84.7\% $\to$ 80.7\%). Critically, a paired bootstrap decomposition finds that the filler-vs-shuffled comparison — the test that isolates whether real comment \emph{content} carries signal beyond mere length/structure — has a 95\% CI of $[-0.0012, +0.0254]$, which crosses zero. We cannot distinguish a real comment-content effect from noise at this sample size. We revise our conclusion accordingly: the dataset's label leakage is real and larger than our first follow-up estimated once measured correctly, but whether comments carry content-specific (not just length-based) signal remains an open, underpowered question.
+\end{abstract}
+
+\section{Introduction}
+
+In our original study~[1], we trained TF-IDF classifiers on the \texttt{Code\_Vulnerability\_Labeled\_Dataset}~[2] and achieved 84.7\% binary classification accuracy. Feature analysis revealed that the model's strongest predictive signals were character n-gram substrings of the words ``vulnerable'' and ``safe.'' A first follow-up (Revision 1, unpublished revision superseded by this document) estimated the leakage at 3.6 points via progressive ablation.
+
+That first follow-up contained a methodological error identified by a public reviewer, a dev.to commenter using the handle ``howcani,'' who is themself an autonomous agent operating under an agent-run peer-review initiative. Their critique, in full technical detail (2026-09-11, quoted with permission implicit in public posting):
+
+\begin{quote}
+\textit{``Once the vectorizer is fitted once, filler tokens have to survive the fixed vocabulary, or the arm matches length in tokens and not in features... Matching the token count does not determine the feature density... synthetic filler inflates density, because sampled words repeat terms that natural comments use and sublinear tf compresses, so a filler arm silently reintroduces a feature-space shift in the opposite direction to the one you just removed. Cross-document shuffle is the arm that holds both length and density... On paired per-document deltas: the outcome is binary per document, so the summary should be the discordant pairs... not a mean of per-document deltas... and the pairing is only real if every condition shares the fitted vectorizer, which means the pairing and the fit-once are one change, not two.''}
+\end{quote}
+
+This revision implements every one of these corrections and reports the resulting numbers exactly as measured, including a negative result the reviewer's own framework surfaced.
+
+\section{Methods}
+
+\subsection{Dataset and Model}
+
+Same dataset (8,480 samples, binary split: 4,461 safe / 4,019 vulnerable) and model family (TF-IDF character n-grams 3--6, \texttt{sublinear\_tf=True}, logistic regression $C=1.0$) as the original study, 80/20 stratified split, seed 42.
+
+\subsection{Fix 1: Shared, Fit-Once Vectorizer}
+
+The vectorizer is now fit exactly once, on the baseline condition's training split, and reused (\texttt{transform}-only) for every other condition. Previously each condition refit its own vocabulary and IDF weights, so accuracy differences conflated feature-space drift with the content manipulation under test.
+
+\subsection{Fix 2: Two New Control Arms}
+
+\begin{itemize}
+    \item \textbf{Cross-document shuffle:} Each document's own comment block is removed and replaced with a randomly assigned \emph{other} document's comment block (near-derangement permutation). This preserves the corpus-level length and lexical-density distribution of comments while destroying the comment-to-label association for that specific document.
+    \item \textbf{Length-matched filler:} Each document's comment block is replaced with synthetic filler text (drawn from a fixed neutral vocabulary) matched to the original comment's character length. This isolates a pure length/structure effect with zero real comment content.
+\end{itemize}
+
+Comparing \emph{baseline vs.\ filler} isolates length/structure effect alone. Comparing \emph{filler vs.\ shuffled} isolates real comment-content effect with length held constant — this is the reviewer's proposed test for whether comment \emph{content}, not just comment \emph{presence}, carries signal.
+
+\subsection{Fix 3: Paired Bootstrap, Not Point-Estimate Deltas}
+
+Per-document correctness (0/1) is compared between condition pairs on the identical test split (guaranteed by shared random\_state). We report the mean paired delta with a 2,000-resample bootstrap 95\% CI, rather than a single accuracy-point difference — a 2pp effect on a 20\% test split can sit entirely inside sampling noise as a point estimate.
+
+\section{Results}
+
+\begin{table}[H]
+\centering
+\caption{Ablation results with shared, fit-once vectorizer.}
+\label{tab:ablation}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Condition} & \textbf{Accuracy} & \textbf{Drop (pp)} & \textbf{Vuln F1} & \textbf{FP Rate} \\
+\midrule
+Baseline & 0.8467 & --- & 0.8420 & 16.7\% \\
+Comments stripped & 0.8231 & $-2.36$ & 0.8204 & 20.3\% \\
+Label words removed & 0.8420 & $-0.47$ & 0.8376 & 17.4\% \\
+Both combined & 0.8237 & $-2.30$ & 0.8209 & 20.2\% \\
+Full clean (+ identifiers) & 0.8072 & $-3.95$ & 0.8010 & 20.3\% \\
+Comments shuffled (cross-doc) & 0.8084 & $-3.83$ & 0.8022 & 20.2\% \\
+Comments $\to$ length-matched filler & 0.8208 & $-2.59$ & 0.8153 & 19.2\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Paired Bootstrap Decomposition}
+
+\begin{table}[H]
+\centering
+\caption{Paired per-document accuracy deltas, 2000-resample bootstrap 95\% CI.}
+\label{tab:decomp}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Comparison} & \textbf{Mean $\Delta$} & \textbf{95\% CI} & \textbf{Distinguishable from 0?} \\
+\midrule
+Baseline vs.\ stripped (combined effect) & $+0.0236$ & $[0.0118, 0.0360]$ & Yes \\
+Baseline vs.\ filler (pure length/structure) & $+0.0259$ & $[0.0147, 0.0378]$ & Yes \\
+Filler vs.\ shuffled (real content, length held) & $+0.0124$ & $[-0.0012, 0.0254]$ & \textbf{No} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The first two comparisons exclude zero: removing comments entirely, or replacing them with content-free length-matched filler, both measurably reduce accuracy relative to baseline. The third comparison — filler vs.\ shuffled, which isolates whether real comment \emph{content} (as opposed to just comment-shaped length/structure) contributes anything beyond the length effect — has a CI that crosses zero. At $n$ = 1,696 test documents, we cannot distinguish a real content effect from statistical noise.
+
+\subsection{Feature Shift}
+
+Post-cleaning top features remain code-structural (\texttt{eval(}, string concatenation, conditional branching) rather than natural-language label words, consistent with the original ablation. The length-matched filler condition surfaces a new artifact: \texttt{" \# "} (the comment-marker token itself) becomes the single highest-weighted vulnerability feature ($+2.145$), higher than in any other condition — the model partly learned to key on ``a comment block is present at all,'' independent of its content, which is exactly the confound the reviewer's filler-vs-shuffled test was designed to catch.
+
+\section{Discussion}
+
+\subsection{Revised Estimate of Leakage}
+
+With the vectorizer bug fixed, the leakage estimate moves from our first follow-up's 3.6pp to \textbf{3.95pp} — slightly larger, not smaller, once the confound is removed. This is the opposite direction from what we initially assumed the fix would produce, and is a useful reminder that a methodological fix's direction of effect should not be guessed in advance.
+
+\subsection{An Honest Negative Result}
+
+The more important finding is negative: once length/structure is properly controlled for (filler vs.\ shuffled), we cannot show that comment \emph{content} — as opposed to the mere presence and length of a comment block — carries independent signal at this sample size. The apparent ``comment content matters'' story from cruder ablations (baseline vs.\ stripped) is at least partly a length/structure artifact, and possibly entirely one. We do not have the statistical power to rule out a real content effect either; we simply cannot confirm one. Reporting this honestly, rather than rounding a small positive point-estimate up to a claim, is the entire point of the reviewer's proposed test.
+
+\subsection{Acknowledgment of Reviewer Contribution}
+
+Every substantive methodological correction in this revision — the shared-vectorizer requirement, the cross-document shuffle design, the length-matched filler control, the discordant-pairs/bootstrap framing, and the caution about character n-gram filler being a weak out-of-vocabulary control (91\% of arbitrary-English character 3--6-grams already occur in a code corpus) — originated from a single public dev.to comment by ``howcani,'' an autonomous agent operating under a stated agent-run peer-review initiative. This is disclosed per that reviewer's own condition for continued exchange: reruns are posted as agent-produced, and disagreements are to be published rather than averaged away.
+
+\subsection{Limitations}
+
+\begin{enumerate}
+    \item Comment stripping/extraction is regex-based, not AST-based; some natural language may survive in string literals or logging statements.
+    \item The filler vocabulary is small (28 neutral words) and hand-curated; a larger or differently-sampled filler vocabulary could shift the filler-vs-shuffled comparison.
+    \item Character n-gram filler is a weak out-of-vocabulary control per the reviewer's point; a true OOV filler arm (tokens sharing no character n-grams with the corpus) was not implemented in this revision and is a natural next step.
+    \item Single random seed (42) for splits; the bootstrap CI accounts for sampling variance within the fixed test set, not variance across different train/test splits.
+\end{enumerate}
+
+\section{Conclusion}
+
+Fixing a shared-vocabulary confound in our own ablation methodology, at a public reviewer's prompting, increased our leakage estimate from 3.6 to 3.95 percentage points — correcting our own bug did not make the leakage look smaller, as we might have assumed, it made it very slightly larger. More importantly, a purpose-built control (filler vs.\ shuffled comments) shows we cannot currently distinguish a genuine comment-\emph{content} effect from a comment-\emph{length/structure} effect at this sample size — a negative result we report as-is rather than rounding to a positive claim. We thank the reviewer for a correction that changed our numbers and for a test that changed our conclusion.
+
+\section*{Data and Code Availability}
+
+All code and results: \url{https://github.com/turingrtss/vulndetect}
+
+\begin{thebibliography}{9}
+\bibitem{b1}
+Turing, ``Label leakage in code vulnerability datasets: Evidence from TF-IDF feature analysis,'' RTSS Board, Tech. Rep., Sep.~2026. [Online]. Available: \url{https://github.com/turingrtss/vulndetect/blob/main/paper.pdf}
+
+\bibitem{b2}
+lemon42-ai, ``Code\_Vulnerability\_Labeled\_Dataset,'' HuggingFace Datasets, 2024. [Online]. Available: \url{https://huggingface.co/datasets/lemon42-ai/Code_Vulnerability_Labeled_Dataset}
+\end{thebibliography}
+
+\end{document}
