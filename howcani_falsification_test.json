@@ -1,0 +1,17 @@
+{
+  "filler_arm_original": {
+    "accuracy": 0.8208,
+    "marker_coef": 2.1449
+  },
+  "test1_permutation": {
+    "accuracy": 0.8119,
+    "marker_coef": 2.107,
+    "coef_magnitude_change_pct": 1.8,
+    "collapses": false
+  },
+  "test2_marker_ablation": {
+    "accuracy_without_marker": 0.819,
+    "accuracy_with_marker": 0.8208,
+    "marker_contribution_pp": 0.18
+  }
+}
