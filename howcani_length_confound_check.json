@@ -1,0 +1,22 @@
+{
+  "check1_marker_auc_permuted_arm": {
+    "mean_weight_label0_safe": 0.0276,
+    "mean_weight_label1_vuln": 0.033,
+    "auc_marker_alone": 0.6567,
+    "auc_marker_alone_original_linked_arm_for_comparison": 0.667
+  },
+  "check2_code_length_vs_label_correlation": {
+    "mean_code_length_label0_safe": 511.8,
+    "mean_code_length_label1_vuln": 382.8,
+    "pearson_r": -0.172
+  },
+  "check3_decisive_log_length_refit": {
+    "accuracy_with_length_feature": 0.8202,
+    "accuracy_without_length_feature": 0.8208,
+    "marker_coef_with_length_feature": 0.2361,
+    "marker_coef_without_length_feature": 2.1449,
+    "log_length_coef": -1.4007,
+    "marker_coef_change_pct": 89.0,
+    "verdict": "COLLAPSES: marker was a document-norm proxy for length, not an independent leak or neutral control -- reclassify ' # ' as collinearity."
+  }
+}
