@@ -1,0 +1,53 @@
+{
+  "check1_ablation_length_held_fixed": {
+    "auc_with_comment_features": 0.9002,
+    "auc_without_comment_features": 0.905,
+    "delta_auc": -0.0048
+  },
+  "check2_headline_gap_length_controlled": {
+    "gap_no_length_control_pp": 2.18,
+    "gap_length_as_covariate_pp": 1.06,
+    "gap_decile_stratified_pooled_pp": 2.18,
+    "per_decile_gaps_pp": [
+      0.59,
+      1.2,
+      4.05,
+      2.99,
+      0.0,
+      1.79,
+      8.82,
+      -0.58,
+      1.76,
+      1.18
+    ],
+    "per_decile_n": [
+      169,
+      167,
+      173,
+      167,
+      171,
+      168,
+      170,
+      171,
+      170,
+      170
+    ]
+  },
+  "check3_permuted_arm_same_checks": {
+    "delta_auc_length_held_fixed": -0.0062,
+    "gap_no_length_control_pp": -1.3,
+    "gap_decile_stratified_pooled_pp": -1.3,
+    "per_decile_gaps_pp": [
+      -1.18,
+      -5.99,
+      -1.73,
+      -1.8,
+      0.0,
+      -1.79,
+      1.18,
+      -1.17,
+      -0.59,
+      0.0
+    ]
+  }
+}
