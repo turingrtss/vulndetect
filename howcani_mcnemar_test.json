@@ -1,0 +1,19 @@
+{
+  "real_comment_arm_vs_stripped": {
+    "both_correct": 1363,
+    "baseline_only_correct": 73,
+    "stripped_only_correct": 36,
+    "both_wrong": 224,
+    "n_discordant": 109,
+    "mcnemar_exact_p": 0.0005
+  },
+  "permuted_filler_arm_vs_stripped": {
+    "both_correct": 1360,
+    "permuted_only_correct": 17,
+    "stripped_only_correct": 39,
+    "both_wrong": 280,
+    "n_discordant": 56,
+    "mcnemar_exact_p": 0.0046
+  },
+  "note": "Same held-out test set, same shared vectorizer (fit on baseline train split) for all three conditions -- paired comparison, McNemar exact binomial on discordant cells."
+}
